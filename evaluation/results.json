@@ -1,0 +1,110 @@
+{
+  "mode": "keyword",
+  "documents": 6,
+  "passages": 6,
+  "queries": 8,
+  "mean_document_recall_at_5": 0.8571428571428571,
+  "p50_ms": 37.9,
+  "p95_ms": 53.89,
+  "limitations": "Small synthetic corpus; document-level recall over top five chunks. Single sequential run, no load test. Does not measure answer factuality or citation support.",
+  "results": [
+    {
+      "query": "vacation leave",
+      "relevant": [
+        "leave.txt"
+      ],
+      "reference": "Twenty vacation days each year; up to five carry over.",
+      "retrieved": [
+        "leave.txt"
+      ],
+      "recall_at_5": 1.0,
+      "latency_ms": 45.95,
+      "empty_result_correct": null
+    },
+    {
+      "query": "remote work",
+      "relevant": [
+        "remote.txt"
+      ],
+      "reference": "Three days each week; international remote work needs manager approval.",
+      "retrieved": [
+        "remote.txt"
+      ],
+      "recall_at_5": 1.0,
+      "latency_ms": 18.99,
+      "empty_result_correct": null
+    },
+    {
+      "query": "E42",
+      "relevant": [
+        "incident.txt"
+      ],
+      "reference": "An expired service certificate; renew it and restart the gateway.",
+      "retrieved": [
+        "incident.txt"
+      ],
+      "recall_at_5": 1.0,
+      "latency_ms": 53.89,
+      "empty_result_correct": null
+    },
+    {
+      "query": "meal allowance",
+      "relevant": [
+        "expenses.txt"
+      ],
+      "reference": "Forty dollars per day.",
+      "retrieved": [
+        "expenses.txt"
+      ],
+      "recall_at_5": 1.0,
+      "latency_ms": 37.9,
+      "empty_result_correct": null
+    },
+    {
+      "query": "backup policy",
+      "relevant": [
+        "backup.txt"
+      ],
+      "reference": "Daily at midnight, retained thirty days; monthly restore drills.",
+      "retrieved": [
+        "backup.txt"
+      ],
+      "recall_at_5": 1.0,
+      "latency_ms": 33.28,
+      "empty_result_correct": null
+    },
+    {
+      "query": "access reviews",
+      "relevant": [
+        "access.txt"
+      ],
+      "reference": "Quarterly.",
+      "retrieved": [
+        "access.txt"
+      ],
+      "recall_at_5": 1.0,
+      "latency_ms": 43.85,
+      "empty_result_correct": null
+    },
+    {
+      "query": "paid time off",
+      "relevant": [
+        "leave.txt"
+      ],
+      "reference": "Twenty vacation days per year; paraphrase challenge.",
+      "retrieved": [],
+      "recall_at_5": 0.0,
+      "latency_ms": 38.12,
+      "empty_result_correct": null
+    },
+    {
+      "query": "lunar shuttle timetable",
+      "relevant": [],
+      "reference": "Abstain; no supporting document.",
+      "retrieved": [],
+      "recall_at_5": null,
+      "latency_ms": 15.88,
+      "empty_result_correct": true
+    }
+  ]
+}

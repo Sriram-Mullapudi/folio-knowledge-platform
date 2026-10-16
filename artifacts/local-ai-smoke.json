@@ -1,0 +1,20 @@
+[
+  {
+    "question": "How many vacation days do team members receive?",
+    "answer": "Team members receive 20 paid vacation days each year. [1]",
+    "sourceCount": 1,
+    "seconds": 50.58
+  },
+  {
+    "question": "What is the company spacecraft launch date?",
+    "answer": "I couldn't find anything relevant in your documents to answer that.",
+    "sourceCount": 0,
+    "seconds": 0.28
+  },
+  {
+    "mode": "SUMMARIZATION",
+    "answer": "Summary of selected excerpts; this may not cover the entire document.\n\n- The handbook covers leave policies [1].\n- Vacation leave is 20 days per year, with up to 5 unused days carryover [1].\n- Remote work is permitted up to 3 days per week [1].\n- Expenses are to be submitted within 30 days, with a daily meal allowance of $40 [1].",
+    "sourceCount": 1,
+    "seconds": 13.23
+  }
+]

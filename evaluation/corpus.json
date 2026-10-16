@@ -1,0 +1,84 @@
+{
+  "documents": [
+    {
+      "name": "leave.txt",
+      "text": "Vacation policy. Employees receive twenty days of paid vacation leave each year. Unused leave carries over up to five days."
+    },
+    {
+      "name": "remote.txt",
+      "text": "Remote work policy. Employees may work remotely three days each week. Manager approval is required for international remote work."
+    },
+    {
+      "name": "incident.txt",
+      "text": "Incident response. Error E42 indicates an expired service certificate. Renew the certificate and restart the gateway."
+    },
+    {
+      "name": "expenses.txt",
+      "text": "Expense reimbursement policy. Submit receipts within thirty days. The meal allowance is forty dollars per day."
+    },
+    {
+      "name": "backup.txt",
+      "text": "Database backup policy. Backups run daily at midnight and are retained for thirty days. Restore drills run monthly."
+    },
+    {
+      "name": "access.txt",
+      "text": "Access security policy. Multi-factor authentication is mandatory. Access reviews take place quarterly."
+    }
+  ],
+  "queries": [
+    {
+      "query": "vacation leave",
+      "relevant": [
+        "leave.txt"
+      ],
+      "reference": "Twenty vacation days each year; up to five carry over."
+    },
+    {
+      "query": "remote work",
+      "relevant": [
+        "remote.txt"
+      ],
+      "reference": "Three days each week; international remote work needs manager approval."
+    },
+    {
+      "query": "E42",
+      "relevant": [
+        "incident.txt"
+      ],
+      "reference": "An expired service certificate; renew it and restart the gateway."
+    },
+    {
+      "query": "meal allowance",
+      "relevant": [
+        "expenses.txt"
+      ],
+      "reference": "Forty dollars per day."
+    },
+    {
+      "query": "backup policy",
+      "relevant": [
+        "backup.txt"
+      ],
+      "reference": "Daily at midnight, retained thirty days; monthly restore drills."
+    },
+    {
+      "query": "access reviews",
+      "relevant": [
+        "access.txt"
+      ],
+      "reference": "Quarterly."
+    },
+    {
+      "query": "paid time off",
+      "relevant": [
+        "leave.txt"
+      ],
+      "reference": "Twenty vacation days per year; paraphrase challenge."
+    },
+    {
+      "query": "lunar shuttle timetable",
+      "relevant": [],
+      "reference": "Abstain; no supporting document."
+    }
+  ]
+}

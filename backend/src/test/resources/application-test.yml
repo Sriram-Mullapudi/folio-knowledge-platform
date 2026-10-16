@@ -1,0 +1,76 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  # Datasource is provided by Testcontainers @ServiceConnection.
+
+# Redis is not started for tests; disable its health contributor so the
+# context loads cleanly. Features that genuinely need Redis get their own
+# container in their own tests.
+management:
+  health:
+    redis:
+      enabled: false
+
+ekp:
+  security:
+    jwt:
+      secret: test-only-secret-value-at-least-32-bytes-long!!
+      issuer: ekp
+      access-ttl: 15m
+      refresh-ttl: 30d
+  admin:
+    email: admin@test.local
+    password: admin-test-password-123
+  storage:
+    s3:
+      endpoint: http://localhost:9000
+      region: us-east-1
+      bucket: ekp-test
+      access-key: test
+      secret-key: test-secret
+      path-style-access: true
+      # Do not touch storage during the default context-load/auth tests.
+      auto-create-bucket: false
+  documents:
+    max-file-size: 25MB
+    chunk-size: 1000
+    chunk-overlap: 150
+  processing:
+    core-pool-size: 1
+    max-pool-size: 2
+    queue-capacity: 50
+  embedding:
+    enabled: false
+    base-url: https://api.openai.com/v1
+    api-key: ""
+    model: text-embedding-3-small
+    dimensions: 1536
+    batch-size: 96
+    requests-per-minute: 0
+    max-retries: 2
+    initial-backoff: 10ms
+    max-backoff: 50ms
+    connect-timeout: 2s
+    read-timeout: 5s
+  generation:
+    enabled: false
+    base-url: https://api.openai.com/v1
+    api-key: ""
+    model: gpt-4o-mini
+    max-output-tokens: 256
+    temperature: 0.2
+    connect-timeout: 2s
+    max-retries: 1
+    initial-backoff: 10ms
+    max-backoff: 50ms
+    retrieval-k: 6
+    max-context-chars: 8000
+
+logging:
+  level:
+    com.ekp: INFO
+    org.testcontainers: INFO
+    org.flywaydb: INFO

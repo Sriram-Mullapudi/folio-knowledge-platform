@@ -1,0 +1,13 @@
+-- V1__baseline.sql
+-- Baseline migration for the Enterprise Knowledge Platform.
+--
+-- Phase 0 only enables the extensions the platform relies on. Domain tables
+-- (users, documents, document_chunks, ...) arrive in their respective phases
+-- as V2__, V3__, ... migrations so every schema change is versioned and
+-- reviewable.
+--
+-- pgvector powers semantic similarity search. The local dev database user is a
+-- superuser (see docker-compose), so CREATE EXTENSION succeeds here. On managed
+-- Postgres (e.g. AWS RDS) the extension is enabled out-of-band by an admin and
+-- this statement is a harmless no-op thanks to IF NOT EXISTS.
+CREATE EXTENSION IF NOT EXISTS vector;

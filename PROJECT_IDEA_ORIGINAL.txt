@@ -1,0 +1,27 @@
+An agentic RAG platform: you upload documents, and you can ask questions in plain English and get streaming, citation-backed answers that are grounded in those documents — with an agent layer that routes different kinds of questions to different strategies.
+A company has thousands of internal documents. People can’t find anything. Keyword search misses paraphrase (“time off policy” vs “vacation leave”); a raw LLM hallucinates and can’t cite sources. This platform ingests the documents, retrieves the genuinely relevant passages, and has an LLM answer only from those passages — with [1][2] citations back to the source, so answers are verifiable instead of invented.
+Stack: React 18 + TypeScript + Vite + Tailwind (frontend) · Java 17 + Spring Boot 3.3.5 (backend) · PostgreSQL 16 + pgvector · Redis · MinIO/S3 · nginx · Docker Compose locally, Terraform/ECS Fargate for AWS.
+Upload path: file → nginx → backend → stored in MinIO → deduplicated by content hash → status UPLOADED. An async pipeline then extracts text (PDFBox), splits it into overlapping chunks, embeds each chunk via OpenAI into a 1536-dim vector, and stores it in Postgres with an HNSW index. Status walks UPLOADED → PROCESSING → COMPLETED.
+Query path: your question gets embedded → Postgres finds the nearest chunks by cosine similarity and by full-text keyword match → the two result sets are fused by Reciprocal Rank Fusion → the top chunks are assembled into a context block within a character budget → the LLM streams an answer token-by-token over Server-Sent Events, with citations pointing back to the chunks used.
+1. Scaffold — monorepo, Docker Compose, health checks, structured JSON logging, correlation IDs, global error handling.
+2. Auth & RBAC — JWT access + refresh tokens, USER/ADMIN roles, method-level security, immutable audit log.
+3. Ingestion — multipart upload to S3/MinIO, content-hash dedupe, file validation.
+4. Processing — PDFBox extraction, recursive chunking, async event-driven pipeline.
+5. Embeddings & vector search — OpenAI embeddings with retry/backoff/rate-limiting, vector(1536) column, HNSW cosine index.
+6. RAG — SSE streaming answers with numbered citations, context-budget assembly.
+7. Hybrid search — Postgres full-text (tsvector + GIN) fused with vector search via RRF; degrades to keyword-only when embeddings are off.
+8. Agentic RAG — a router classifies each question and dispatches to one of four agents: Retrieval, SQL (safe templated metadata queries), Research (decompose → retrieve per sub-question → synthesize), Summarization. Bounded memory, per-step error isolation, full execution trace.
+9. Operational tooling — thumbs-up/down feedback with metrics, admin dashboard (stats/users/documents/audit/feedback), Redis caching, Prometheus metrics.
+10. AWS deployment — Terraform for VPC/ECS Fargate/RDS/ElastiCache/ALB/Secrets Manager, GitHub Actions OIDC pipeline, deployment doc with cost (~$210/mo staging) and DR targets.
+- Why hybrid search beats vector-only: pure semantic search fails on exact tokens — error codes, IDs, product names. Keyword search fails on paraphrase. RRF fuses them by rank, so you never have to normalize two incompatible scoring scales. This is your strongest technical talking point.
+- Why the SQL agent is safe: it never executes model-generated SQL. The LLM only picks an intent; the actual query is a pre-written, parameterized, owner-scoped template. That eliminates the injection surface entirely — a security instinct most candidates at your level don’t show.
+Verified working on your machine: compiles, all 7 DB migrations apply, boots clean, login + RBAC (your 200 OK probe), document upload → processing → completed, keyword search, admin dashboard, Postgres/Redis healthy.
+Built but never exercised: the Ask and Agent tabs — the headline features — because they need an OpenAI API key you haven’t added. You’ve seen the body run, not the brain.
+Built but never deployed: the Terraform. It’s authored and reviewed; terraform apply was never run against a live AWS account. This is exactly why your resume says “authored Terraform IaC,” not “deployed.”
+Real bugs that only surfaced by running it — and this is the genuinely valuable lesson of the whole exercise: an ambiguous jdbc.query lambda, a SMALLINT vs INTEGER schema mismatch, and nginx’s 1 MB default upload cap (your 413). None were visible in code review; all appeared the moment real execution happened.
+Not production-ready, per the readiness review you have: the P0 blockers are TLS on the ALB, per-user rate limiting on the LLM endpoints, moving agent memory to Redis before multi-node, and real integration/security tests.
+No metrics yet — the index size, p95 latency, recall, security-test-count, and deploy-time numbers an interviewer will ask for don’t exist, because you never ran it at a scale that produces them.
+1. Write the authorization test suite — half a day, no cost, no API key, fixes a P0 gap, and turns the vaguest interview question (“how did you test tenant isolation?”) into a countable answer. We’re already in the codebase.
+2. Add an OpenAI key and ingest a real corpus — lights up Ask/Agent and produces your three best metrics (index size, p95 latency, recall@5 for hybrid vs. vector-only).
+3. Deploy to AWS once — converts “authored Terraform” into “deployed,” fixes your weakest resume score, gives you a live URL and a real provisioning-time number.
+That’s the whole thing, end to end — what it does, how it’s built, what’s real, and what’s still aspirational.
