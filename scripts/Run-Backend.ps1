@@ -36,6 +36,8 @@ Push-Location (Join-Path $projectRoot 'backend')
 try {
     & .\mvnw.cmd -B package -DskipTests
     if ($LASTEXITCODE -ne 0) { throw 'Backend build failed' }
+    try { & (Join-Path $PSScriptRoot 'Warm-LocalAI.ps1') }
+    catch { Write-Warning 'Local AI could not be prepared. Folio will still start; check Docker and run scripts/Warm-LocalAI.ps1 to retry.' }
     & (Join-Path $env:JAVA_HOME 'bin/java.exe') -jar target/ekp-backend.jar
 } finally { Pop-Location }
 

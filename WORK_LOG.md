@@ -107,3 +107,13 @@ Validation: full backend suite passed 71 tests with zero failures/errors/skips. 
 ## GitHub project snapshot — 2026-10-16
 
 Initialized an independent Git repository inside the Folio project, excluding the parent home-directory repository. Created private GitHub repository Sriram-Mullapudi/folio-knowledge-platform. Prepared a source snapshot with code, tests, migrations, documentation, local setup scripts, and synthetic verification artifacts. Configured secrets were checked against candidate files and excluded; runtime databases, uploads, model weights, logs, dependencies and build outputs remain local. AGENTS.md records the user-authorized preference to commit and push completed, tested future project work. This is not a background backup schedule. Existing validation: 71 backend tests passed and frontend build/lint passed.
+
+## Answer evaluation and demo readiness — 2026-10-16
+
+Added six fictional answer fixtures and a local-only, authenticated upload/retrieval/generation evaluation harness. The real qwen2.5:3b model passed all eight automated cases, covering direct facts, archived/current policies, cross-document comparison, safe incident steps, missing information, no evidence, and one malicious document-instruction fixture. Manually reviewed saved answers against the retrieved excerpts. These small heuristic checks are not a production accuracy or security claim.
+
+Compared four identical retrieved contexts with warmed qwen2.5:3b and qwen2.5:1.5b. The smaller model omitted citations in two cases, so the existing 3b default remains. Saved both successes and failures. Added a five-document fictional demo and walkthrough.
+
+Added loopback-only local-model preparation after backend build, with non-blocking failure and a local opt-out. Increased Ollama idle retention from five to 15 minutes. Applied the Compose change and successfully prepared 3b in 49.0 seconds. This shifts loading into startup and retains memory longer; it does not remove CPU generation costs or cold delays after idle expiry. PowerShell parser checks and Python compilation passed. No Java or frontend source changed; their prior 71-test/build/lint results were not rerun.
+
+Post-preparation full-app verification passed 8/8 again. First answer: 10.97s total, 7.13s to first text, compared with 74.35s before preparation. Remaining generated answers took 3.55–23.44s; timings remain variable. Results saved in evaluation/answer-results-warm.json.

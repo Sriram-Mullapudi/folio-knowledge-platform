@@ -1,0 +1,2 @@
+Northstar Labs — Gateway incident runbook.
+Error E42 means the gateway service certificate has expired. The operator must first renew the certificate, then restart the gateway, and finally confirm that the health check passes. Do not disable certificate verification. Error E17 instead indicates an upstream timeout and requires checking the upstream service. Neither error authorizes deleting databases. Escalate unresolved incidents to the on-call operations engineer.

@@ -6,6 +6,10 @@ The corpus has eight labelled questions including an exact error code, a paraphr
 
 For a no-cost baseline, leave embeddings and generation disabled. To compare hybrid retrieval, use a separately configured embedding-enabled instance; embedding calls may incur provider charges. Keep corpus, hardware, and model version constant and record warm-up and concurrency settings before claiming performance gains.
 
-Answer quality remains a separate evaluation: use the reference answers to manually assess factual support, citation accuracy, completeness, and abstention after a real generation provider is configured. Unit tests use a fake provider and validate control flow and citation structure, not real-model accuracy.
+For real local answer evaluation, run `python evaluation/answer_eval.py` (defaults to port 8081). It creates its own synthetic account, uploads six fictional documents, and checks eight questions for facts, expected citation references, missing-information responses, and one document-injection case. Failed checks return a nonzero exit code. Review the answers manually: these heuristics cannot prove factual entailment. Synthetic accounts/documents remain in the development database; credentials are never saved.
+
+With both qwen2.5:3b and qwen2.5:1.5b installed in local Ollama, run `python evaluation/model_compare.py` after the answer evaluation. It reuses the retrieved evidence for four selected cases, warms each model, and records model-stage timings and checks without changing the app configuration. Comparison failures are recorded as findings rather than a failing process exit. Use `--output` to preserve previous result files.
+
+See [measured results and limitations](ANSWER_QUALITY.md). This small fictional set and its demo questions are not an independent production benchmark. Unit tests still use a fake provider and validate control flow and citation structure, not real-model accuracy.
 
 Full-text indexing follows the PostgreSQL 16 stored generated tsvector and GIN pattern: https://www.postgresql.org/docs/16/textsearch-tables.html

@@ -26,7 +26,7 @@ cd backend
 .\mvnw.cmd -B test
 ```
 
-Testcontainers 1.21.4 supports the installed Docker engine. Tests create their own disposable PostgreSQL and MinIO containers; all six Flyway migrations are exercised. Frontend checks: `npm.cmd run build` and `npm.cmd run lint` from `frontend`.
+Testcontainers 1.21.4 supports the installed Docker engine. Tests create their own disposable PostgreSQL and MinIO containers; all eight Flyway migrations are exercised. Frontend checks: `npm.cmd run build` and `npm.cmd run lint` from `frontend`.
 
 ```powershell
 python evaluation/run.py --base-url http://127.0.0.1:8081
@@ -55,6 +55,10 @@ Run `scripts/Enable-LocalAI.ps1` once, then restart with `scripts/Run-Backend.ps
 The launcher starts the local-AI Compose profile whenever this local endpoint is enabled. Generation has its own `GENERATION_BASE_URL` and `GENERATION_API_KEY`, independent of embedding settings. Embeddings remain disabled; retrieval uses keyword search. CPU inference may be slower than hosted generation. A larger model can be selected with the setup script's `-Model` option if hardware permits.
 
 To return to passage-only search, set `GENERATION_ENABLED=false` in `.env.local` and restart the backend. To stop the model service without removing downloaded models, run `docker compose --env-file .env.local -f infra/compose.local.yml --profile local-ai stop ollama` from the project folder.
+
+The backend launcher prepares the local model after its build, before starting the app. Preparation may take about a minute on this computer; failure produces a warning and does not block startup. Ollama keeps the model in memory for 15 minutes after activity. This reduces reloads but holds RAM longer. After that idle period the next answer can be slow again. Run `scripts/Warm-LocalAI.ps1` before a demo to prepare it manually. Set `LOCAL_AI_WARMUP=false` in `.env.local` to skip preparation. This helper only supports the exact local endpoint above and never calls a hosted provider.
+
+See [measured answer results](evaluation/ANSWER_QUALITY.md) and the [fictional demo walkthrough](demo/WALKTHROUGH.md). The smaller qwen2.5:1.5b model omitted required citations in two of four comparison cases, so qwen2.5:3b remains the default.
 
 ## Saved conversations
 

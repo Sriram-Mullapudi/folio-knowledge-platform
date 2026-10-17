@@ -275,3 +275,7 @@ bundle) and `npm run lint`. Both run in CI on every push.
   Dockerfile and CI fall back to `npm install`.
 - A strong `JWT_SECRET` (≥ 32 bytes) is mandatory; the committed default is
   intentionally insecure and for local use only.
+
+## Try the product
+
+Follow the [fictional Northstar Labs demo](demo/WALKTHROUGH.md) to explore collections, cited answers, policy comparisons, honest missing-information responses, and saved exports. See the [local answer-quality report](evaluation/ANSWER_QUALITY.md) for measured results and limitations.
