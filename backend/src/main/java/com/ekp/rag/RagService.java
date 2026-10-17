@@ -90,7 +90,9 @@ public class RagService {
             if (assembled.sources().isEmpty()) {
                 // No grounding -> skip the model entirely; this is the cheapest and
                 // safest way to avoid a hallucinated answer.
-                sink.onToken(NO_CONTEXT_ANSWER);
+                sink.onToken(needsReference(request)
+                        ? "Which project or document do you mean? Include its name in your question, or first ask about it in this conversation. I don't have enough context to identify it yet."
+                        : NO_CONTEXT_ANSWER);
                 sink.onComplete();
                 recordAnswer(user, request, 0);
                 return;
@@ -129,6 +131,14 @@ public class RagService {
                 .collect(Collectors.joining(" "));
         String query = request.question() + (previous.isEmpty() ? "" : " " + previous);
         return query.substring(0, Math.min(query.length(), 4000));
+    }
+
+    // Only clarify after retrieval finds no evidence. A selected document may
+    // already resolve a reference even when this is the first question.
+    private boolean needsReference(RagRequest request) {
+        return history(request).isEmpty() && java.util.regex.Pattern.compile(
+                "(?i)\\b(it|its|they|their|them|that|those|these)\\b|^\\s*what(?:'s| is| has)? changed\\??\\s*$")
+                .matcher(request.question()).find();
     }
 
     private List<RagRequest.PreviousTurn> history(RagRequest request) {

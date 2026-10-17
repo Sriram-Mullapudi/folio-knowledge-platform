@@ -12,6 +12,28 @@ import java.util.function.Consumer;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
 class RagServiceTest {
+    @Test void asksForAReferenceWhenFirstQuestionHasNoMatchingEvidence() {
+        when(props.maxContextChars()).thenReturn(1000);
+        when(search.retrieve(any(),eq(user))).thenReturn(List.of());
+        for (String question : List.of("When does it launch?", "What changed?")) {
+            AnswerSink sink=mock(AnswerSink.class);
+            service.answer(new RagRequest(question,null,null),user,sink);
+            verify(sink).onToken(contains("Which project or document do you mean?"));
+            verify(sink).onComplete();
+        }
+        verifyNoInteractions(model);
+    }
+
+    @Test void firstQuestionCanUseEvidenceFromASelectedDocument() {
+        when(props.maxContextChars()).thenReturn(1000);
+        when(docs.findAllById(any())).thenReturn(List.of());
+        UUID id=UUID.randomUUID();
+        when(search.retrieve(any(),eq(user))).thenReturn(List.of(new SearchHit(UUID.randomUUID(),id,0,"Atlas launches in November",0,.02)));
+        AnswerSink sink=mock(AnswerSink.class);
+        service.answer(new RagRequest("When does it launch?",id,null),user,sink);
+        verify(model).stream(anyList(),any());
+        verify(sink,never()).onToken(contains("Which project"));
+    }
     @Test void followUpRetrievesFreshEvidenceWithinTheSelectedScope() {
         UUID documentId=UUID.randomUUID(), collectionId=UUID.randomUUID();
         when(search.retrieve(any(),eq(user))).thenReturn(List.of());

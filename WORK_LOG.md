@@ -125,3 +125,11 @@ Ask a question now sends up to three completed, non-error turns from the same do
 Validation: 7 RAG/HTTP tests passed, then 14 auth/persistence/RAG tests passed after metadata changes (overlapping suites, not 21 unique tests). Frontend build and lint passed; the initial sandbox build hit a filesystem permission error and the approved retry succeeded. Browser inspection confirmed the context control is visible; no user documents were modified. Restarted the local backend with the new build.
 
 Live local-model checks passed: initial Atlas owner, launch follow-up after saved-conversation reload, correction of a fabricated 2099 date in prior history, and abstention on missing launch-location evidence. Timings: 15.92s, 5.24s, 4.94s, 4.81s. The missing-location response repeated the unsupported phrase spacecraft Atlas while declining to provide a location; this remains a wording/false-premise limitation. Four short synthetic cases are not proof of general conversation accuracy. Results: evaluation/followup-results.json.
+
+## Clarify missing follow-up references — 2026-10-17
+
+Reproduced the user-visible state: a first question, When does it launch?, with no preceding project reference. When retrieval finds no evidence and no history is supplied, referential questions now ask which project or document the user means. Questions with matching document evidence still proceed normally; named questions with no matches retain the existing abstention. This is a bounded English wording heuristic, not general reference resolution. Source-free answers and clarification responses are excluded from frontend follow-up history.
+
+Validation: eight RagService tests passed, including no-context clarification and evidence from a selected document. Frontend build and lint passed. The current browser conversation was inspected without changing user documents or submitting questions on their behalf.
+
+Live authenticated verification passed for the exact first-question case using a new synthetic account. Restarted the local backend with this fix.
