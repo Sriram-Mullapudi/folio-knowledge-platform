@@ -21,7 +21,8 @@ public class ConversationController {
     public record Turn(@NotBlank @Size(max=100) String id, @NotBlank @Size(max=4000) String question,
                        @NotNull @Size(max=100000) String answer, @NotNull @Size(max=30) List<@Valid Source> sources,
                        @NotBlank @Pattern(regexp="SEARCH|RETRIEVAL|RESEARCH|SUMMARIZATION") String kind,
-                       @Size(max=4000) String error, @Size(max=30) List<@Size(max=4000) String> trace) {}
+                       @Size(max=4000) String error, @Size(max=30) List<@Size(max=4000) String> trace,
+                       @Size(max=36) String scope, @Size(max=36) String collectionId, Boolean completed) {}
     public record Snapshot(@NotBlank @Size(max=120) String title, @NotNull @Size(min=1,max=100) List<@Valid Turn> turns,
                            @NotNull @Pattern(regexp="SEARCH|RETRIEVAL|RESEARCH|SUMMARIZATION") String mode,
                            @NotNull @Size(max=36) String scope, UUID collectionId) {}

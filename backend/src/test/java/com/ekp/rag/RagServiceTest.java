@@ -12,6 +12,30 @@ import java.util.function.Consumer;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
 class RagServiceTest {
+    @Test void followUpRetrievesFreshEvidenceWithinTheSelectedScope() {
+        UUID documentId=UUID.randomUUID(), collectionId=UUID.randomUUID();
+        when(search.retrieve(any(),eq(user))).thenReturn(List.of());
+        when(props.maxContextChars()).thenReturn(1000);
+        var history=List.of(new RagRequest.PreviousTurn("Who owns Atlas?", "An unsupported old claim [9]"));
+        AnswerSink sink=mock(AnswerSink.class);
+        service.answer(new RagRequest("When does it launch?",documentId,5,collectionId,history),user,sink);
+        verify(search).retrieve(argThat(r -> r.query().contains("Atlas")
+                && r.query().contains("When does it launch?") && !r.query().contains("unsupported")
+                && documentId.equals(r.documentId()) && collectionId.equals(r.collectionId())),eq(user));
+        verifyNoInteractions(model);
+        verify(sink).onToken(contains("couldn't find"));
+    }
+
+    @Test void historyIsBoundedAndNestedFieldsAreValidated() {
+        try (var factory=jakarta.validation.Validation.buildDefaultValidatorFactory()) {
+            var validator=factory.getValidator();
+            var turn=new RagRequest.PreviousTurn("Who owns Atlas?", "Mira Chen");
+            assertThat(validator.validate(new RagRequest("When?",null,null,null,List.of(turn)))).isEmpty();
+            assertThat(validator.validate(new RagRequest("When?",null,null,null,Collections.nCopies(4,turn)))).isNotEmpty();
+            assertThat(validator.validate(new RagRequest("When?",null,null,null,List.of(new RagRequest.PreviousTurn("", "x"))))).isNotEmpty();
+            assertThat(validator.validate(new RagRequest("When?",null,null,null,List.of(new RagRequest.PreviousTurn("x", "a".repeat(1001)))))).isNotEmpty();
+        }
+    }
     final SearchService search=mock(SearchService.class);
     final DocumentRepository docs=mock(DocumentRepository.class);
     final ChatModelClient model=mock(ChatModelClient.class);

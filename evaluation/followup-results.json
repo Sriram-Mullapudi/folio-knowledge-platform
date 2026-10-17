@@ -1,0 +1,67 @@
+{
+  "passed": true,
+  "savedContextRoundTrip": true,
+  "limitations": "Four live answers on fictional short documents; not broad conversation-quality proof.",
+  "results": [
+    {
+      "question": "Who owns Atlas?",
+      "answer": "The Atlas project is owned by Mira Chen [1].",
+      "sources": [
+        {
+          "number": 1,
+          "documentId": "abff4db1-0f33-4995-a362-abb9112de474",
+          "filename": "atlas-project-brief.txt",
+          "chunkIndex": 0,
+          "similarity": 0.01639344262295082,
+          "snippet": "Northstar Labs \u2014 Atlas project brief, approved 12 September 2026.\nThe Atlas launch date is 18 November 2026. The project owner is Mira Chen. The approved budget is $48,000, including a $6,000 contingency reserve. Phase one includes document search and source citations. Mobile applications are out of scope for phase one. The launch depends on completing the security review by 4 November 2026. This brief does not guarantee launch if that review fails."
+        }
+      ],
+      "seconds": 15.92
+    },
+    {
+      "question": "When does it launch?",
+      "answer": "The Atlas launch date is 18 November 2026 [1].",
+      "sources": [
+        {
+          "number": 1,
+          "documentId": "abff4db1-0f33-4995-a362-abb9112de474",
+          "filename": "atlas-project-brief.txt",
+          "chunkIndex": 0,
+          "similarity": 0.01639344262295082,
+          "snippet": "Northstar Labs \u2014 Atlas project brief, approved 12 September 2026.\nThe Atlas launch date is 18 November 2026. The project owner is Mira Chen. The approved budget is $48,000, including a $6,000 contingency reserve. Phase one includes document search and source citations. Mobile applications are out of scope for phase one. The launch depends on completing the security review by 4 November 2026. This brief does not guarantee launch if that review fails."
+        }
+      ],
+      "seconds": 5.24
+    },
+    {
+      "question": "When does it launch?",
+      "answer": "The Atlas launch date is 18 November 2026 [1].",
+      "sources": [
+        {
+          "number": 1,
+          "documentId": "abff4db1-0f33-4995-a362-abb9112de474",
+          "filename": "atlas-project-brief.txt",
+          "chunkIndex": 0,
+          "similarity": 0.01639344262295082,
+          "snippet": "Northstar Labs \u2014 Atlas project brief, approved 12 September 2026.\nThe Atlas launch date is 18 November 2026. The project owner is Mira Chen. The approved budget is $48,000, including a $6,000 contingency reserve. Phase one includes document search and source citations. Mobile applications are out of scope for phase one. The launch depends on completing the security review by 4 November 2026. This brief does not guarantee launch if that review fails."
+        }
+      ],
+      "seconds": 4.94
+    },
+    {
+      "question": "What is its spacecraft launch location?",
+      "answer": "The sources do not contain information about the launch location of the spacecraft Atlas. [1]",
+      "sources": [
+        {
+          "number": 1,
+          "documentId": "abff4db1-0f33-4995-a362-abb9112de474",
+          "filename": "atlas-project-brief.txt",
+          "chunkIndex": 0,
+          "similarity": 0.01639344262295082,
+          "snippet": "Northstar Labs \u2014 Atlas project brief, approved 12 September 2026.\nThe Atlas launch date is 18 November 2026. The project owner is Mira Chen. The approved budget is $48,000, including a $6,000 contingency reserve. Phase one includes document search and source citations. Mobile applications are out of scope for phase one. The launch depends on completing the security review by 4 November 2026. This brief does not guarantee launch if that review fails."
+        }
+      ],
+      "seconds": 4.81
+    }
+  ]
+}

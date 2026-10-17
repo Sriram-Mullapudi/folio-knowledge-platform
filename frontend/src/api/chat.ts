@@ -17,6 +17,7 @@ export interface StreamHandlers {
 }
 
 export interface AskOptions {
+  history?: { question: string; answer: string }[];
   documentId?: string;
   collectionId?: string;
   k?: number;
@@ -50,6 +51,7 @@ export async function streamAnswer(
       },
       body: JSON.stringify({
         question,
+        history: opts.history ?? [],
         documentId: opts.documentId ?? null,
         collectionId: opts.collectionId ?? null,
         k: opts.k ?? null,

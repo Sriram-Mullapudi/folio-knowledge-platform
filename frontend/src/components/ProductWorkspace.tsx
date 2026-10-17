@@ -8,7 +8,7 @@ import { streamAnswer, type ChatSource } from "../api/chat";
 type Summary={documents:number;ready:number;processing:number;failed:number;answersEnabled:boolean;searchMode:string};
 type Hit={chunkId:string;documentId:string;chunkIndex:number;content:string};
 type Result={mode:string;answer:string;sources:ChatSource[];trace:string[]};
-type Turn={id:string;question:string;answer:string;sources:ChatSource[];kind:string;error?:string;trace?:string[]};
+type Turn={id:string;question:string;answer:string;sources:ChatSource[];kind:string;scope?:string;collectionId?:string;completed?:boolean;error?:string;trace?:string[]};
 type View="ask"|"library"|"history";
 type Collection={id:string;name:string;count:number};
 type SavedItem={id:string;title:string;updatedAt:string};
@@ -28,6 +28,7 @@ export function ProductWorkspace({user,onLogout,signingOut}:{user:AuthUser;onLog
  const [scope,setScope]=useState(""); const [mode,setMode]=useState<Mode>("SEARCH"); const initialized=useRef(false);
  const draftKey=`folio.draft.${user.id}`;
  const [question,setQuestion]=useState(()=>sessionStorage.getItem(draftKey)??"");
+ const [useContext,setUseContext]=useState(true);
  const [turns,setTurns]=useState<Turn[]>([]); const [busy,setBusy]=useState(false);
  const [selectedSource,setSelectedSource]=useState<ChatSource|null>(null); const [activeTurn,setActiveTurn]=useState<string|null>(null);
  const [uploading,setUploading]=useState(false);const [progress,setProgress]=useState(0);const [dragging,setDragging]=useState(false);
@@ -57,7 +58,7 @@ export function ProductWorkspace({user,onLogout,signingOut}:{user:AuthUser;onLog
  useEffect(()=>{if(view==="history")void loadHistory();},[view,loadHistory]);
  const saveConversation=async()=>{if(busy||saving||!turns.length)return;setSaving(true);try{const result=await apiPost<{id:string}>(`/api/v1/conversations${savedId?`/${savedId}`:""}`,JSON.parse(snapshot));setSavedId(result.id);setSavedState(snapshot);setNotice("Conversation saved to your account.");}catch(e){setError(problem(e));}finally{setSaving(false);}};
  const mayReplace=()=>!dirty||window.confirm("This conversation has unsaved changes. Leave without saving?");
- const openSaved=async(item:SavedItem)=>{if(busy||saving||!mayReplace())return;try{const saved=await apiGet<Snapshot>(`/api/v1/conversations/${item.id}`);setTurns(saved.turns);setSavedTitle(saved.title);setSavedId(item.id);setMode(saved.mode);setScope(saved.scope);setCollectionId(saved.collectionId||"");setPage(0);setSavedState(JSON.stringify({title:saved.title,turns:saved.turns,mode:saved.mode,scope:saved.scope,collectionId:saved.collectionId||null}));setSelectedSource(null);setActiveTurn(null);setView("ask");setNotice("Saved conversation opened. Source excerpts are snapshots from when you saved; originals may have changed or been removed. Each new question searches your documents independently.");}catch(e){setError(problem(e));}};
+ const openSaved=async(item:SavedItem)=>{if(busy||saving||!mayReplace())return;try{const saved=await apiGet<Snapshot>(`/api/v1/conversations/${item.id}`);setTurns(saved.turns);setSavedTitle(saved.title);setSavedId(item.id);setMode(saved.mode);setScope(saved.scope);setCollectionId(saved.collectionId||"");setPage(0);setSavedState(JSON.stringify({title:saved.title,turns:saved.turns,mode:saved.mode,scope:saved.scope,collectionId:saved.collectionId||null}));setSelectedSource(null);setActiveTurn(null);setView("ask");setNotice("Saved conversation opened. Source excerpts are snapshots from when you saved; originals may have changed or been removed. Follow-up questions can use recent completed answers from the same document selection. Sources are searched again for every answer.");}catch(e){setError(problem(e));}};
  const exportText=(turn:Turn)=>`${turn.question}\n\n${turn.answer}${turn.error?`\n\nNote: ${turn.error}`:""}\n\nSources\n${turn.sources.map(s=>`[${s.number}] ${s.filename} — passage ${s.chunkIndex+1}\n${s.snippet}`).join("\n\n")}`;
  const copyAnswer=async(turn:Turn)=>{try{await navigator.clipboard.writeText(exportText(turn));setNotice("Answer and sources copied.");}catch{setError("Copy was unavailable. Use Export instead.");}};
  const exportConversation=()=>{const blob=new Blob([`# ${savedTitle||turns[0]?.question||"Folio conversation"}\n\n${turns.map(exportText).join("\n\n---\n\n")}`],{type:"text/markdown;charset=utf-8"});const url=URL.createObjectURL(blob);const link=document.createElement("a");link.href=url;link.download="folio-conversation.md";link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
@@ -71,14 +72,14 @@ export function ProductWorkspace({user,onLogout,signingOut}:{user:AuthUser;onLog
   if(mode==="SUMMARIZATION"&&!scope){setError("Choose one document to summarize first.");return;}
   const id=crypto.randomUUID(),current=++run.current;abort.current=new AbortController();
   setBusy(true);setError("");setSelectedSource(null);setActiveTurn(id);setQuestion("");
-  setTurns(all=>[...all,{id,question:q,answer:"",sources:[],kind:mode}]);
+  setTurns(all=>[...all,{id,question:q,answer:"",sources:[],kind:mode,scope,collectionId}]);
   const valid=()=>current===run.current;
   try{
    if(mode==="SEARCH"){
     const hits=await apiPost<Hit[]>("/api/v1/search",{query:q,documentId:scope||null,collectionId:collectionId||null,k:6});
     if(valid())patch(id,{answer:hits.length?`Found ${hits.length} relevant passage${hits.length===1?"":"s"}. These are original excerpts, not an AI-written answer.`:"No matching passages yet. Try a few specific words, a name, or a phrase from your document.",sources:hits.map((h,i)=>({number:i+1,documentId:h.documentId,filename:docs.find(d=>d.id===h.documentId)?.filename??"Source document",chunkIndex:h.chunkIndex,similarity:0,snippet:h.content}))});
    }else if(mode==="RETRIEVAL"){
-    await streamAnswer(q,{documentId:scope||undefined,collectionId:collectionId||undefined,signal:abort.current.signal},{onSources:s=>{if(valid())patch(id,{sources:s});},onToken:delta=>{if(valid())patch(id,t=>({...t,answer:t.answer+delta}));},onDone:()=>{},onError:message=>{if(valid())patch(id,{error:message});}});
+    await streamAnswer(q,{history:useContext?turns.filter(t=>t.kind==="RETRIEVAL"&&t.completed&&!t.error&&t.scope===scope&&t.collectionId===collectionId).slice(-3).map(t=>({question:t.question.slice(0,500),answer:t.answer.slice(0,1000)})):[],documentId:scope||undefined,collectionId:collectionId||undefined,signal:abort.current.signal},{onSources:s=>{if(valid())patch(id,{sources:s});},onToken:delta=>{if(valid())patch(id,t=>({...t,answer:t.answer+delta}));},onDone:()=>{if(valid())patch(id,{completed:true});},onError:message=>{if(valid())patch(id,{error:message});}});
    }else{
     const answer=await apiPost<Result>("/api/v1/agent",{question:q,documentId:scope||null,collectionId:collectionId||null,mode},65000);
     if(valid())patch(id,{answer:answer.answer,sources:answer.sources,trace:answer.trace});
@@ -101,6 +102,7 @@ export function ProductWorkspace({user,onLogout,signingOut}:{user:AuthUser;onLog
  <div className="main-shell"><header className="topbar"><div><span className="breadcrumb">Your workspace</span><span className="breadcrumb-slash">/</span><strong>{view==="ask"?"Ask & explore":view==="history"?"Saved conversations":"My documents"}</strong></div><button className="secondary small" onClick={()=>uploadInput.current?.click()} disabled={uploading}>＋ Add documents</button></header>
  <input ref={uploadInput} type="file" accept=".pdf,.txt,.md,.markdown" multiple hidden aria-label="Choose documents to upload" onChange={(e:ChangeEvent<HTMLInputElement>)=>void upload(Array.from(e.target.files??[]))}/>
  <main id="main" className="product-main">
+ {view==="ask"&&mode==="RETRIEVAL"&&<label className="context-option"><input type="checkbox" checked={useContext} disabled={busy} onChange={e=>setUseContext(e.target.checked)}/> Use recent conversation for follow-up questions</label>}
  {error&&<div className="notice error" role="alert"><span>{error}</span><button onClick={()=>{setError("");void load();}}>Try again</button></div>}
  {notice&&<div className="notice" role="status"><span>{notice}</span><button aria-label="Dismiss notification" onClick={()=>setNotice("")}>×</button></div>}
  {uploading&&<div className="notice" role="status"><span>Adding your document… {progress}%</span><progress max={100} value={progress}/></div>}

@@ -13,3 +13,5 @@ With both qwen2.5:3b and qwen2.5:1.5b installed in local Ollama, run `python eva
 See [measured results and limitations](ANSWER_QUALITY.md). This small fictional set and its demo questions are not an independent production benchmark. Unit tests still use a fake provider and validate control flow and citation structure, not real-model accuracy.
 
 Full-text indexing follows the PostgreSQL 16 stored generated tsvector and GIN pattern: https://www.postgresql.org/docs/16/textsearch-tables.html
+
+For multi-turn verification, run `python evaluation/followup_eval.py`. It checks live follow-ups, saved context metadata, a deliberately false prior answer, and absent evidence using a new fictional account. Results go to `followup-results.json`; assertions fail the process on a regression.
