@@ -145,3 +145,11 @@ The first live revision failed the explicit employer-switch check: a mixed role/
 Final fictional live run passed all six checks across three answers: role description, referential technology question, and explicit employer switch. Follow-up evidence narrowed from two chunks to one role excerpt. Both final technology lists are supported by their cited excerpts. Details and limitations: evaluation/ATTRIBUTION.md.
 
 Browser replay of the original follow-up used one named-role excerpt and omitted the unsupported general-skill additions. Opened the citation and checked it against the answer. The answer still included the job title alongside technologies, a presentation limitation. The screenshot remains outside the repository in local temporary storage; no private resume content was added to Git.
+
+## Section-aware processing — 2026-10-18
+
+Added section-boundary splitting with copied heading context on continuation passages, preserved Markdown heading levels during extraction, and retained the old splitter for unstructured prose. No schema migration or automatic reprocessing of existing user documents. Added Update search on ready library documents to reprocess the original when requested.
+
+Initial verification: 14 backend splitter/upload tests passed; frontend build and lint passed. Live synthetic retrieval found late-section details and Markdown hierarchy, but reprocessing exposed an existing Hibernate insert-before-delete unique-index violation. Added an explicit flush after old chunk deletion and a real-database regression test for replacement. The operation remains transactional. No user documents were used for destructive or mutation tests.
+
+Final verification: five upload/authorization/reprocessing integration tests passed after the fix. All six live synthetic checks passed: long-role continuation retains heading, no role/skills overlap, named continuation retrieval, Markdown hierarchy retrieval, idempotent reprocessing, and cross-owner exclusion. The new Update search button was exercised on the synthetic sample in the browser and returned to Ready to explore; the layout was visually checked. Original user documents and the existing open conversation were preserved. New UI may require a saved-conversation-safe page refresh in older tabs. Results: evaluation/section-results.json.

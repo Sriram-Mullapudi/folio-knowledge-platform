@@ -61,6 +61,38 @@ class DocumentUploadIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Test
+    void reprocessingReplacesSectionsWithoutDuplicateIndexes() throws Exception {
+        String token=registerAndGetToken("reprocess-sections@test.local");
+        String text="Cedar Health | Engineer | 2024–Present\n"+"Built scheduling tools. ".repeat(100)
+                +"\nGeneral skills\nRust and Terraform.";
+        var file=new MockMultipartFile("file","sections.txt","text/plain",text.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        String response=mockMvc.perform(multipart("/api/v1/documents").file(file).header("Authorization","Bearer "+token))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
+        String id=objectMapper.readTree(response).get("id").asText();
+        awaitReady(id,token);
+        String first=mockMvc.perform(get("/api/v1/documents/"+id+"/chunks").header("Authorization","Bearer "+token))
+                .andReturn().getResponse().getContentAsString();
+        int count=objectMapper.readTree(first).get("content").size();
+        org.assertj.core.api.Assertions.assertThat(count).isGreaterThan(2);
+        mockMvc.perform(post("/api/v1/documents/"+id+"/reprocess").header("Authorization","Bearer "+token)).andExpect(status().isOk());
+        awaitReady(id,token);
+        mockMvc.perform(get("/api/v1/documents/"+id+"/chunks").header("Authorization","Bearer "+token))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.totalElements",is(count)));
+    }
+
+    private void awaitReady(String id,String token) throws Exception {
+        for(int i=0;i<200;i++) {
+            String json=mockMvc.perform(get("/api/v1/documents/"+id).header("Authorization","Bearer "+token))
+                    .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+            String state=objectMapper.readTree(json).get("status").asText();
+            org.assertj.core.api.Assertions.assertThat(state).isNotEqualTo("FAILED");
+            if(state.equals("COMPLETED"))return;
+            Thread.sleep(50);
+        }
+        throw new AssertionError("Processing did not finish");
+    }
+
+    @Test
     void uploadThenDuplicateThenList() throws Exception {
         String token = registerAndGetToken("doc-owner@test.local");
         MockMultipartFile file = new MockMultipartFile(

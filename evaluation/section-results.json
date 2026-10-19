@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "checks": [
+    "long-role continuation retains heading",
+    "no cross-role/skills overlap",
+    "named continuation retrieved",
+    "Markdown hierarchy retrieved",
+    "reprocessing idempotent",
+    "cross-owner search excluded"
+  ],
+  "resumeChunkCount": 7,
+  "resumeHits": [
+    {
+      "chunkId": "7b1be426-c9c7-4247-8ae0-db3e7a188d6a",
+      "documentId": "f48f018f-3eed-4829-a2c6-0e6eced2a964",
+      "chunkIndex": 4,
+      "content": "Cedar Health | Engineer | 2024\u2013Present\nUsed CobaltQueue for notification delivery.",
+      "similarity": 0.01639344262295082
+    }
+  ],
+  "policyHits": [
+    {
+      "chunkId": "f7d011bd-3476-4d04-954c-20dbd6477dac",
+      "documentId": "aae81361-1c6a-441b-b753-734b6395127d",
+      "chunkIndex": 4,
+      "content": "# Atlas\n## Retention\nThe special retention window is 63 days.",
+      "similarity": 0.01639344262295082
+    }
+  ],
+  "limitations": "Two fictional text/Markdown documents. No OCR, PDF layout or general heading-recognition accuracy claim."
+}

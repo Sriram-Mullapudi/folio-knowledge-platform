@@ -2,6 +2,7 @@ package com.ekp.processing;
 
 import com.ekp.document.DocumentProperties;
 import com.ekp.processing.chunk.RecursiveChunker;
+import com.ekp.processing.chunk.SectionAwareChunker;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,6 +46,6 @@ public class ProcessingConfig {
 
     @Bean
     public RecursiveChunker recursiveChunker(DocumentProperties props) {
-        return new RecursiveChunker(props.chunkSize(), props.chunkOverlap());
+        return new SectionAwareChunker(props.chunkSize(), props.chunkOverlap());
     }
 }

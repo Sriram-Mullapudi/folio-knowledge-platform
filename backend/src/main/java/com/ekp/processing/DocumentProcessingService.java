@@ -72,6 +72,9 @@ public class DocumentProcessingService {
         List<String> pieces = chunker.chunk(text);
 
         chunks.deleteByDocumentId(documentId);
+        // Hibernate schedules inserts before entity deletes unless explicitly
+        // flushed; replacement chunks reuse the unique document/index pair.
+        chunks.flush();
         List<DocumentChunk> entities = new ArrayList<>(pieces.size());
         for (int i = 0; i < pieces.size(); i++) {
             String piece = pieces.get(i);

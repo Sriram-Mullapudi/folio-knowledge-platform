@@ -79,3 +79,13 @@ Referential follow-ups (for example, Which technologies did he use there?) now i
 This is a conservative English heuristic, not an entity resolver or an attribution guarantee. Broad matches in the original question can still contain mixed sections. Relevant details outside the topic passages may be omitted; ask an explicit question to broaden the search. Section-aware indexing and stronger semantic retrieval remain future work.
 
 Employer technology questions also use conservative excerpt filtering when an employer can be recognized after at/for in the current question or referential question history. Only chunks containing that employer remain; excerpts begin at its name and stop at recognized skills/education/summary headings or a following dated pipe-formatted role heading. Earlier generated answers are omitted for technology questions so an old incorrect skill list cannot seed the next answer. Other layouts, lowercase employer names, or technology synonyms may not trigger this heuristic. It can omit valid continuation paragraphs, and it does not guarantee completeness or correctness.
+
+## Section-aware search passages
+
+New uploads split at recognized Markdown headings, standard resume section labels, short dated employer headings, and explicit Project:/Policy: labels. Continuation passages repeat the original heading so keyword search can still associate a late detail with its section. Markdown parent headings are retained within the character budget. Overlap stays inside a section; unstructured text uses the previous splitter. Repeated headings are context copied from the document, not newly generated facts or exact adjacent text from the original page.
+
+For existing files, use **My documents → Update search**. This reprocesses the stored original and replaces its search passages; it does not upload another file or modify the original. Saved conversations retain their earlier excerpt snapshots and passage numbers may change. Search is temporarily unavailable for that document while it is processing. Existing files are not silently reprocessed. If the button is missing in an older open tab, save your conversation before refreshing the page.
+
+Recognition is heuristic and English-oriented. PDF text must already extract into meaningful lines; this does not add OCR, table understanding, PDF page locations, or semantic embeddings. Unusual headings can be missed, and short date-bearing lines may be mistaken for headings. Heading repetition improves the tested continuation searches, not all paraphrases or model accuracy.
+
+Run `python evaluation/section_eval.py` for synthetic long-section retrieval, Markdown hierarchy, owner isolation, and reprocessing checks.
