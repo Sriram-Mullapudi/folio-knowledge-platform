@@ -19,3 +19,10 @@ For multi-turn verification, run `python evaluation/followup_eval.py`. It checks
 For employer-attribution regression checks, run `python evaluation/attribution_eval.py`. It uploads one wholly fictional resume, tests an employer question, a pronoun follow-up and an explicit employer switch, and saves answers, excerpts and checks. Phrase checks must be read alongside the answers; a forbidden term could also appear in a valid negative statement. Do not substitute a private resume into committed fixtures or result files.
 
 `python evaluation/section_eval.py` exercises section-aware processing using a long fictional resume and Markdown policy. It checks continuation retrieval, section separation, heading hierarchy, reprocessing idempotence and owner isolation. It does not call generation or establish answer accuracy.
+# Local semantic retrieval
+
+After enabling local search, run `python evaluation/semantic_eval.py` from the
+project root. It creates two synthetic accounts and three fictional policy
+documents, checks top-ranked results for paraphrased questions and one cited answer, and verifies a
+second account cannot retrieve the first account's document. Results are saved
+to `evaluation/semantic-results.json`. It does not modify existing user files.

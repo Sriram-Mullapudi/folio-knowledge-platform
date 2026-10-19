@@ -94,8 +94,8 @@ ekp:
   # un-embedded and picked up automatically once a key is configured.
   embedding:
     enabled: ${EMBEDDINGS_ENABLED:false}
-    base-url: ${OPENAI_BASE_URL:https://api.openai.com/v1}
-    api-key: ${OPENAI_API_KEY:}
+    base-url: ${EMBEDDING_BASE_URL:${OPENAI_BASE_URL:https://api.openai.com/v1}}
+    api-key: ${EMBEDDING_API_KEY:${OPENAI_API_KEY:}}
     model: ${EMBEDDING_MODEL:text-embedding-3-small}
     # MUST equal the vector() column size in V5 (1536 for text-embedding-3-small).
     dimensions: ${EMBEDDING_DIMENSIONS:1536}

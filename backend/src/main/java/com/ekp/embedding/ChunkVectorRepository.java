@@ -18,35 +18,37 @@ import java.util.UUID;
 public class ChunkVectorRepository {
 
     private final JdbcTemplate jdbc;
+    private final String model;
 
-    public ChunkVectorRepository(JdbcTemplate jdbc) {
+    public ChunkVectorRepository(JdbcTemplate jdbc, EmbeddingProperties props) {
         this.jdbc = jdbc;
+        this.model = props.model();
     }
 
     /** Chunks for a document that still need an embedding, in reading order. */
     public List<UnembeddedChunk> findUnembedded(UUID documentId, int limit) {
         return jdbc.query(
                 "SELECT id, content FROM document_chunks "
-                        + "WHERE document_id = ? AND embedding IS NULL "
+                        + "WHERE document_id = ? AND (embedding IS NULL OR embedding_model IS DISTINCT FROM ?) "
                         + "ORDER BY chunk_index LIMIT ?",
                 (rs, i) -> new UnembeddedChunk(UUID.fromString(rs.getString("id")),
                         rs.getString("content")),
-                documentId, limit);
+                documentId, model, limit);
     }
 
     public int countUnembedded(UUID documentId) {
         Integer count = jdbc.queryForObject(
                 "SELECT count(*) FROM document_chunks "
-                        + "WHERE document_id = ? AND embedding IS NULL",
-                Integer.class, documentId);
+                        + "WHERE document_id = ? AND (embedding IS NULL OR embedding_model IS DISTINCT FROM ?)",
+                Integer.class, documentId, model);
         return count == null ? 0 : count;
     }
 
     /** Distinct documents that still have at least one un-embedded chunk. */
     public List<UUID> documentsWithUnembeddedChunks() {
         return jdbc.queryForList(
-                        "SELECT DISTINCT document_id FROM document_chunks WHERE embedding IS NULL",
-                        String.class)
+                        "SELECT DISTINCT document_id FROM document_chunks WHERE embedding IS NULL OR embedding_model IS DISTINCT FROM ?",
+                        String.class, model)
                 .stream().map(UUID::fromString).toList();
     }
 
@@ -77,6 +79,8 @@ public class ChunkVectorRepository {
         List<Object> args = new ArrayList<>();
         args.add(literal);
         args.add(ownerId);
+        sql.append("AND c.embedding_model = ? ");
+        args.add(model);
         if (documentId != null) {
             sql.append("AND c.document_id = ? ");
             args.add(documentId);

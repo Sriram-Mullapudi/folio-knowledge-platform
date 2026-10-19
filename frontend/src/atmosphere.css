@@ -1,0 +1,32 @@
+/* Static paper contours: no animation, network assets, or overlay on controls. */
+body {
+  background-color: #faf9f6;
+  background-image:
+    radial-gradient(ellipse at 94% 8%, #e5dced80, transparent 48%),
+    radial-gradient(ellipse at 26% 88%, #e9dfcf60, transparent 50%);
+}
+.main-shell { position: relative; isolation: isolate; }
+.main-shell::before {
+  content: ''; position: absolute; z-index: -1; pointer-events: none;
+  inset: 0; opacity: .36;
+  background-image: url('/folio-contours.svg');
+  background-repeat: no-repeat; background-position: right top; background-size: 820px auto;
+}
+.sidebar { background: linear-gradient(165deg, #f3f0f4, #f2f0e9 85%); }
+.topbar { background: #faf9f6e8; }
+.evidence-panel { background: linear-gradient(160deg, #f4f0f6, #f4f1ea); box-shadow: 0 10px 35px #4c396606; }
+.suggestions button { box-shadow: 0 4px 16px #4c396605; }
+.composer { box-shadow: 0 8px 35px #4c39660c, 0 1px 3px #4c396608; }
+.answer-block { background: #faf9f6; border-radius: 12px; }
+.auth-story {
+  background-color: #eee8f2;
+  background-image: url('/folio-contours.svg'), linear-gradient(145deg, #eae2f1, #f2ede3);
+  background-position: right top; background-repeat: no-repeat; background-size: cover;
+}
+@media (max-width: 600px) {
+  .main-shell::before { background-size: 500px auto; opacity: .2; }
+}
+@media (forced-colors: active) {
+  .main-shell::before { display: none; }
+  .sidebar, .topbar, .evidence-panel, .auth-story, .answer-block { background: Canvas; }
+}

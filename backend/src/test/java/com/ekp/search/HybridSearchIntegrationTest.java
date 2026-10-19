@@ -52,7 +52,7 @@ class HybridSearchIntegrationTest {
         document(a,"vacation outside","COMPLETED");
         jdbc.update("UPDATE documents SET collection_id=? WHERE id=?",collection,included);
         float[] v=new float[1536];v[0]=1;
-        for(UUID id:jdbc.queryForList("SELECT id FROM document_chunks",UUID.class))vectors.saveEmbedding(id,v,"test");
+        for(UUID id:jdbc.queryForList("SELECT id FROM document_chunks",UUID.class))vectors.saveEmbedding(id,v,"text-embedding-3-small");
         assertThat(vectors.search(v,a,null,10,collection)).extracting(ChunkVectorRepository.SearchHit::documentId).containsExactly(included);
         assertThat(vectors.search(v,b,null,10,collection)).isEmpty();
         assertThat(keywords.search("vacation days",a,null,10,collection)).extracting(ChunkVectorRepository.SearchHit::documentId).containsExactly(included);
@@ -62,8 +62,18 @@ class HybridSearchIntegrationTest {
         UUID foreign=document(b,"secret","COMPLETED"); document(a,"draft","PROCESSING");
         float[] vector=new float[1536]; vector[0]=1;
         var ids=jdbc.queryForList("SELECT id FROM document_chunks", UUID.class);
-        for(UUID id:ids) vectors.saveEmbedding(id,vector,"test-fixture");
+        for(UUID id:ids) vectors.saveEmbedding(id,vector,"text-embedding-3-small");
         assertThat(vectors.search(vector,a,null,10)).extracting(ChunkVectorRepository.SearchHit::documentId).containsExactly(own);
         assertThat(vectors.search(vector,a,foreign,10)).isEmpty();
+    }
+
+    @Test void excludesDifferentModelsAndSchedulesThemForReindexing() {
+        UUID a=owner(); UUID doc=document(a,"old model passage","COMPLETED");
+        UUID chunk=jdbc.queryForObject("SELECT id FROM document_chunks WHERE document_id=?",UUID.class,doc);
+        float[] v=new float[1536];v[0]=1;
+        vectors.saveEmbedding(chunk,v,"old-model");
+        assertThat(vectors.search(v,a,doc,5)).isEmpty();
+        assertThat(vectors.findUnembedded(doc,8)).hasSize(1);
+        assertThat(vectors.documentsWithUnembeddedChunks()).contains(doc);
     }
 }

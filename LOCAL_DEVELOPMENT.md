@@ -89,3 +89,27 @@ For existing files, use **My documents → Update search**. This reprocesses the
 Recognition is heuristic and English-oriented. PDF text must already extract into meaningful lines; this does not add OCR, table understanding, PDF page locations, or semantic embeddings. Unusual headings can be missed, and short date-bearing lines may be mistaken for headings. Heading repetition improves the tested continuation searches, not all paraphrases or model accuracy.
 
 Run `python evaluation/section_eval.py` for synthetic long-section retrieval, Markdown hierarchy, owner isolation, and reprocessing checks.
+# Local semantic search
+
+Run `scripts/Enable-LocalSearch.ps1`, then restart `scripts/Run-Backend.ps1`.
+This downloads Ollama's `nomic-embed-text:v1.5` model and configures embeddings
+independently of answer generation. No API key is needed; document text stays
+on this computer. Model download needs internet once. The setup does not
+overwrite generation credentials. Existing passages are indexed on startup;
+new uploads are indexed after processing. Original uploads are unchanged.
+
+Queries combine keyword and semantic rankings. If the embedding request fails,
+keyword search remains available (after the configured request timeout). Each
+vector query retains owner/document/collection filters and selects only the
+configured model. Changing models schedules old vectors for replacement at
+startup. Keyword search works while indexing is incomplete.
+
+The local model produces 768 values. They are validated and zero-padded to the
+existing 1536-value storage column; this preserves cosine similarity without a
+destructive schema migration. Query/document task prefixes are applied only to
+the supported local Nomic model. Ollama can keep two models loaded within the
+existing 5 GB memory limit; limited hardware may still reload models and be slow.
+
+Run `evaluation/semantic_eval.py` against the local app for three fictional
+paraphrase rankings, one cited answer, and cross-account isolation. This is a small retrieval
+check, not a comprehensive answer correctness benchmark.

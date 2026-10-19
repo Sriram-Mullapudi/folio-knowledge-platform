@@ -46,7 +46,8 @@ public class EmbeddingService {
             if (batch.isEmpty()) {
                 break;
             }
-            List<float[]> result = client.embed(batch.stream().map(UnembeddedChunk::content).toList());
+            List<float[]> result = client.embed(batch.stream().map(c ->
+                    (props.isLocalNomic() ? "search_document: " : "") + c.content()).toList());
             for (int i = 0; i < batch.size(); i++) {
                 vectors.saveEmbedding(batch.get(i).id(), result.get(i), props.model());
             }
@@ -59,6 +60,6 @@ public class EmbeddingService {
 
     /** Embeds a single query string for similarity search. */
     public float[] embedQuery(String query) {
-        return client.embed(List.of(query)).get(0);
+        return client.embed(List.of((props.isLocalNomic() ? "search_query: " : "") + query)).get(0);
     }
 }

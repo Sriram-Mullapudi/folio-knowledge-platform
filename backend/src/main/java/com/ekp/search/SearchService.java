@@ -39,7 +39,14 @@ public class SearchService {
         int candidates = Math.min(100, k * 3);
         var lexical = request.collectionId()==null ? keywords.search(request.query(), user.id(), request.documentId(), candidates) : keywords.search(request.query(),user.id(),request.documentId(),candidates,request.collectionId());
         if (!embeddings.isUsable()) return RankFusion.fuse(List.of(lexical), k);
-        float[] queryVector = embeddings.embedQuery(request.query());
+        float[] queryVector;
+        try {
+            queryVector = embeddings.embedQuery(request.query());
+        } catch (com.ekp.embedding.EmbeddingClient.EmbeddingException e) {
+            org.slf4j.LoggerFactory.getLogger(SearchService.class)
+                    .warn("Semantic search unavailable; using keyword results");
+            return RankFusion.fuse(List.of(lexical), k);
+        }
         List<ChunkVectorRepository.SearchHit> hits =
                 request.collectionId()==null ? vectors.search(queryVector, user.id(), request.documentId(), candidates) : vectors.search(queryVector,user.id(),request.documentId(),candidates,request.collectionId());
         return RankFusion.fuse(List.of(hits, lexical), k);

@@ -153,3 +153,25 @@ Added section-boundary splitting with copied heading context on continuation pas
 Initial verification: 14 backend splitter/upload tests passed; frontend build and lint passed. Live synthetic retrieval found late-section details and Markdown hierarchy, but reprocessing exposed an existing Hibernate insert-before-delete unique-index violation. Added an explicit flush after old chunk deletion and a real-database regression test for replacement. The operation remains transactional. No user documents were used for destructive or mutation tests.
 
 Final verification: five upload/authorization/reprocessing integration tests passed after the fix. All six live synthetic checks passed: long-role continuation retains heading, no role/skills overlap, named continuation retrieval, Markdown hierarchy retrieval, idempotent reprocessing, and cross-owner exclusion. The new Update search button was exercised on the synthetic sample in the browser and returned to Ready to explore; the layout was visually checked. Original user documents and the existing open conversation were preserved. New UI may require a saved-conversation-safe page refresh in older tabs. Results: evaluation/section-results.json.
+# 2026-10-19 — Local semantic search and background design
+
+- Connected keyless loopback Ollama Nomic v1.5 embeddings with document/query
+  prefixes, finite/nonzero/dimension validation, and cosine-preserving zero
+  padding into the existing vector column. Kept remote provider support.
+- Isolated retrieval by model as well as owner/document/collection. Startup
+  replaces missing or outdated model vectors. Keyword fallback handles embedding
+  request failures. Added repeatable local setup without overwriting generation
+  configuration; two Ollama models may load within the existing memory cap.
+- Added a static local SVG contour background, warm lavender/paper gradients,
+  opaque answer surfaces and forced-colors handling. No animation or added image
+  network dependency. Browser visual review remains unverified because the local
+  URL was blocked by the browser tool's security policy; no workaround attempted.
+- Validation: 13 targeted backend tests passed, including real PostgreSQL
+  model/owner/collection isolation; frontend build and lint passed. Packaging
+  initially hit Windows' running-JAR lock; stopping the backend and rebuilding
+  through Run-Backend.ps1 succeeded. Final backend started successfully.
+- Live evaluation passed three fictional paraphrase top-rank checks, a cited
+  answer (twenty paid days), and cross-owner exclusion. Results are in
+  evaluation/semantic-results.json. This small fixture set does not establish
+  general retrieval or answer accuracy. Existing passages were indexed locally;
+  original documents were not rewritten.

@@ -36,6 +36,15 @@ class SearchServiceTest {
         assertThat(service.search(new SearchRequest("q", null, 9999), user)).isEmpty();
         verify(keywords).search("q", user.id(), null, 100);
     }
+    @Test void retainsScopedKeywordResultsWhenLocalModelFails() {
+        UUID doc=UUID.randomUUID(), collection=UUID.randomUUID(); SearchHit h=hit();
+        when(embeddings.isUsable()).thenReturn(true);
+        when(embeddings.embedQuery("leave")).thenThrow(new EmbeddingClient.EmbeddingException("offline"));
+        when(keywords.search("leave",user.id(),doc,15,collection)).thenReturn(List.of(h));
+        assertThat(service.search(new SearchRequest("leave",doc,5,collection),user))
+            .extracting(SearchHitResponse::chunkId).containsExactly(h.chunkId());
+        verifyNoInteractions(vectors);
+    }
     @Test void fusionIsStableAndDoesNotCountDuplicatesWithinOneRanking() {
         SearchHit a = hit(), b = hit();
         var result = RankFusion.fuse(List.of(List.of(a, a), List.of(b)), 10);

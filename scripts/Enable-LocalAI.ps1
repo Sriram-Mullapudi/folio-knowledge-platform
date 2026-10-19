@@ -14,7 +14,6 @@ $settings = [ordered]@{
  GENERATION_API_KEY='ollama-local'
  GENERATION_MODEL=$Model
  GENERATION_MAX_TOKENS='450'
- EMBEDDINGS_ENABLED='false'
 }
 $lines = @(Get-Content -LiteralPath $envFile | Where-Object { ($_ -split '=',2)[0] -notin $settings.Keys })
 foreach ($entry in $settings.GetEnumerator()) { $lines += "$($entry.Key)=$($entry.Value)" }

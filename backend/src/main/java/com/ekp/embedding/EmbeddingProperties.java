@@ -7,7 +7,7 @@ import java.time.Duration;
 /**
  * Embedding pipeline settings ({@code ekp.embedding.*}).
  *
- * @param enabled            master switch; also treated as off when apiKey is blank
+ * @param enabled            master switch; remote providers also require apiKey
  * @param baseUrl            API base, e.g. https://api.openai.com/v1
  * @param apiKey             provider API key (from OPENAI_API_KEY)
  * @param model              embedding model, e.g. text-embedding-3-small
@@ -35,8 +35,14 @@ public record EmbeddingProperties(
         Duration connectTimeout,
         Duration readTimeout
 ) {
-    /** Embeddings are usable only when explicitly enabled and a key is present. */
+    /** Explicitly enabled, with credentials unless using the supported local model. */
     public boolean isUsable() {
-        return enabled && apiKey != null && !apiKey.isBlank();
+        return enabled && (isLocalNomic() || (apiKey != null && !apiKey.isBlank()));
+    }
+
+    /** Keyless access is limited to the explicit loopback Ollama endpoint. */
+    public boolean isLocalNomic() {
+        return "http://127.0.0.1:11434/v1".equals(baseUrl)
+                && "nomic-embed-text:v1.5".equals(model);
     }
 }

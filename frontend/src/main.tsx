@@ -4,6 +4,7 @@ import App from "./App";
 import { AuthProvider } from "./auth/AuthContext";
 import "./index.css";
 import "./product.css";
+import "./atmosphere.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

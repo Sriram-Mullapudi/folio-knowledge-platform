@@ -40,10 +40,10 @@ public class OpenAiEmbeddingClient implements EmbeddingClient {
 
     @Override
     public List<float[]> embed(List<String> inputs) {
-        Map<String, Object> body = Map.of(
+        Map<String, Object> body = new java.util.HashMap<>(Map.of(
                 "model", props.model(),
-                "input", inputs,
-                "dimensions", props.dimensions());
+                "input", inputs));
+        if (!props.isLocalNomic()) body.put("dimensions", props.dimensions());
 
         int attempt = 0;
         while (true) {
@@ -52,7 +52,10 @@ public class OpenAiEmbeddingClient implements EmbeddingClient {
             try {
                 EmbeddingResponse response = restClient.post()
                         .uri("/embeddings")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + props.apiKey())
+                        .headers(headers -> {
+                            if (props.apiKey() != null && !props.apiKey().isBlank())
+                                headers.setBearerAuth(props.apiKey());
+                        })
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(body)
                         .retrieve()
@@ -119,10 +122,25 @@ public class OpenAiEmbeddingClient implements EmbeddingClient {
             throw new EmbeddingException("Embedding response size mismatch (expected "
                     + expected + ")");
         }
-        return response.data().stream()
-                .sorted(Comparator.comparingInt(Datum::index))
-                .map(Datum::embedding)
-                .toList();
+        var ordered = response.data().stream().sorted(Comparator.comparingInt(Datum::index)).toList();
+        var result = new java.util.ArrayList<float[]>();
+        for (int i = 0; i < ordered.size(); i++) {
+            var datum = ordered.get(i);
+            int expectedDimensions = props.isLocalNomic() ? 768 : props.dimensions();
+            if (datum.index() != i || datum.embedding() == null || datum.embedding().length != expectedDimensions)
+                throw new EmbeddingException("Invalid embedding index or dimensions");
+            double norm = 0;
+            for (float value : datum.embedding()) {
+                if (!Float.isFinite(value)) throw new EmbeddingException("Non-finite embedding");
+                norm += (double) value * value;
+            }
+            if (norm == 0) throw new EmbeddingException("Empty embedding direction");
+            // Zero padding preserves cosine distances and the existing 1536-column schema.
+            if (props.isLocalNomic() && props.dimensions() != 1536)
+                throw new EmbeddingException("Local Nomic requires 1536 storage dimensions");
+            result.add(java.util.Arrays.copyOf(datum.embedding(), props.dimensions()));
+        }
+        return result;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

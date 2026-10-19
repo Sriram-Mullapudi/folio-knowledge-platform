@@ -1,0 +1,93 @@
+{
+  "passed": true,
+  "model": "nomic-embed-text:v1.5",
+  "checks": [
+    {
+      "query": "How much time off can I take?",
+      "expectedDocument": "leave.txt",
+      "matched": true,
+      "hits": [
+        {
+          "chunkId": "632e7c13-9df6-4695-b25f-6a677b1bf973",
+          "documentId": "a21e41e0-5d6a-4796-a3aa-4723f9151210",
+          "chunkIndex": 0,
+          "content": "Vacation allowance: Employees receive twenty paid days annually.",
+          "similarity": 0.01639344262295082
+        },
+        {
+          "chunkId": "999baedb-e86c-4a04-99c1-1450caa17dae",
+          "documentId": "d587b8e9-ae15-4fa3-a107-8e2c3c61a95a",
+          "chunkIndex": 0,
+          "content": "Remote working: Staff may telecommute three weekdays weekly.",
+          "similarity": 0.016129032258064516
+        },
+        {
+          "chunkId": "98347da1-b0cd-4d48-b6e2-cf33bb713365",
+          "documentId": "78c0be9b-f5d9-4ae0-9bb8-bfff75b3ecbd",
+          "chunkIndex": 0,
+          "content": "Expense reimbursement: Submit receipts within thirty days.",
+          "similarity": 0.015873015873015872
+        }
+      ]
+    },
+    {
+      "query": "Can I do my job away from the office?",
+      "expectedDocument": "remote.txt",
+      "matched": true,
+      "hits": [
+        {
+          "chunkId": "999baedb-e86c-4a04-99c1-1450caa17dae",
+          "documentId": "d587b8e9-ae15-4fa3-a107-8e2c3c61a95a",
+          "chunkIndex": 0,
+          "content": "Remote working: Staff may telecommute three weekdays weekly.",
+          "similarity": 0.01639344262295082
+        },
+        {
+          "chunkId": "632e7c13-9df6-4695-b25f-6a677b1bf973",
+          "documentId": "a21e41e0-5d6a-4796-a3aa-4723f9151210",
+          "chunkIndex": 0,
+          "content": "Vacation allowance: Employees receive twenty paid days annually.",
+          "similarity": 0.016129032258064516
+        },
+        {
+          "chunkId": "98347da1-b0cd-4d48-b6e2-cf33bb713365",
+          "documentId": "78c0be9b-f5d9-4ae0-9bb8-bfff75b3ecbd",
+          "chunkIndex": 0,
+          "content": "Expense reimbursement: Submit receipts within thirty days.",
+          "similarity": 0.015873015873015872
+        }
+      ]
+    },
+    {
+      "query": "When must I turn in proof of purchases?",
+      "expectedDocument": "expenses.txt",
+      "matched": true,
+      "hits": [
+        {
+          "chunkId": "98347da1-b0cd-4d48-b6e2-cf33bb713365",
+          "documentId": "78c0be9b-f5d9-4ae0-9bb8-bfff75b3ecbd",
+          "chunkIndex": 0,
+          "content": "Expense reimbursement: Submit receipts within thirty days.",
+          "similarity": 0.01639344262295082
+        },
+        {
+          "chunkId": "632e7c13-9df6-4695-b25f-6a677b1bf973",
+          "documentId": "a21e41e0-5d6a-4796-a3aa-4723f9151210",
+          "chunkIndex": 0,
+          "content": "Vacation allowance: Employees receive twenty paid days annually.",
+          "similarity": 0.016129032258064516
+        },
+        {
+          "chunkId": "999baedb-e86c-4a04-99c1-1450caa17dae",
+          "documentId": "d587b8e9-ae15-4fa3-a107-8e2c3c61a95a",
+          "chunkIndex": 0,
+          "content": "Remote working: Staff may telecommute three weekdays weekly.",
+          "similarity": 0.015873015873015872
+        }
+      ]
+    }
+  ],
+  "crossOwnerExcluded": true,
+  "citedParaphraseAnswer": "Employees can take twenty paid days annually as vacation allowance [1].",
+  "limitations": "Three short fictional paraphrases and one cited answer, not a general answer-quality benchmark."
+}

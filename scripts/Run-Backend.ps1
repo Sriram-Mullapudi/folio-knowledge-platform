@@ -15,7 +15,7 @@ foreach ($line in Get-Content -LiteralPath $envFile) {
     if ($line -match '^([A-Z][A-Z0-9_]*)=(.*)$') { [Environment]::SetEnvironmentVariable($matches[1],$matches[2],'Process') }
 }
 $composeArgs = @('--env-file', $envFile, '-f', (Join-Path $projectRoot 'infra/compose.local.yml'))
-if ($env:GENERATION_ENABLED -eq 'true' -and $env:GENERATION_BASE_URL -eq 'http://127.0.0.1:11434/v1') { $composeArgs += @('--profile','local-ai') }
+if (($env:GENERATION_ENABLED -eq 'true' -and $env:GENERATION_BASE_URL -eq 'http://127.0.0.1:11434/v1') -or ($env:EMBEDDINGS_ENABLED -eq 'true' -and $env:EMBEDDING_BASE_URL -eq 'http://127.0.0.1:11434/v1')) { $composeArgs += @('--profile','local-ai') }
 docker compose @composeArgs up -d --wait
 if ($LASTEXITCODE -ne 0) { throw 'Local services failed to start' }
 $env:DB_PORT='55432'
