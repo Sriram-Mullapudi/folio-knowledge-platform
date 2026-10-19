@@ -133,3 +133,15 @@ Reproduced the user-visible state: a first question, When does it launch?, with 
 Validation: eight RagService tests passed, including no-context clarification and evidence from a selected document. Frontend build and lint passed. The current browser conversation was inspected without changing user documents or submitting questions on their behalf.
 
 Live authenticated verification passed for the exact first-question case using a new synthetic account. Restarted the local backend with this fix.
+
+## Preserve employer attribution — 2026-10-17
+
+Added conservative topic filtering for referential follow-ups: intersect current results with fresh results for the latest explicit prior question, retaining ownership/document/collection constraints in both queries. Empty intersections use only the topic results. Explicitly named topic switches use the new question alone. Added generation instructions to keep general skills separate from role-specific evidence and to qualify incomplete lists. This English heuristic reduces broad-match contamination; it does not parse resume sections or prove claim entailment.
+
+Eleven backend/RAG/streaming tests passed, including unrelated-skill exclusion and explicit topic-switch coverage. No frontend source changed. Added a fictional multi-role resume and a live before/after evaluation; no private resume text or result is committed. The fictional baseline already answered correctly, so it is evidence for retrieved-context narrowing, not a before/after accuracy gain.
+
+The first live revision failed the explicit employer-switch check: a mixed role/general-skills chunk caused unsupported attribution despite the prompt. Preserved that failed result in evaluation/attribution-intermediate.json. Added conservative literal excerpt selection for named employer technology questions and omitted earlier generated answers for those questions. New tests cover mixed sections, another role boundary, prompt contamination, and unaffected general-skills questions. All 13 final targeted tests passed. Packaging initially hit a Windows lock on the running jar; stopping the local service allowed the rebuild and restart to succeed.
+
+Final fictional live run passed all six checks across three answers: role description, referential technology question, and explicit employer switch. Follow-up evidence narrowed from two chunks to one role excerpt. Both final technology lists are supported by their cited excerpts. Details and limitations: evaluation/ATTRIBUTION.md.
+
+Browser replay of the original follow-up used one named-role excerpt and omitted the unsupported general-skill additions. Opened the citation and checked it against the answer. The answer still included the job title alongside technologies, a presentation limitation. The screenshot remains outside the repository in local temporary storage; no private resume content was added to Git.

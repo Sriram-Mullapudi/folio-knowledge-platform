@@ -15,3 +15,5 @@ See [measured results and limitations](ANSWER_QUALITY.md). This small fictional 
 Full-text indexing follows the PostgreSQL 16 stored generated tsvector and GIN pattern: https://www.postgresql.org/docs/16/textsearch-tables.html
 
 For multi-turn verification, run `python evaluation/followup_eval.py`. It checks live follow-ups, saved context metadata, a deliberately false prior answer, and absent evidence using a new fictional account. Results go to `followup-results.json`; assertions fail the process on a regression.
+
+For employer-attribution regression checks, run `python evaluation/attribution_eval.py`. It uploads one wholly fictional resume, tests an employer question, a pronoun follow-up and an explicit employer switch, and saves answers, excerpts and checks. Phrase checks must be read alongside the answers; a forbidden term could also appear in a valid negative statement. Do not substitute a private resume into committed fixtures or result files.

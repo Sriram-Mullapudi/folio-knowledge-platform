@@ -1,0 +1,59 @@
+{
+  "checks": {
+    "initial_grounded": true,
+    "followup_required": true,
+    "followup_no_other_role_or_general_skills": true,
+    "followup_cited": true,
+    "topic_switch": true,
+    "switch_cited": true
+  },
+  "passed": true,
+  "limitations": "One fictional resume and three live answers. Phrase checks require manual review, including negative mentions; not general attribution accuracy.",
+  "results": [
+    {
+      "question": "What did the candidate build at Cedar Health?",
+      "answer": "The candidate built a patient scheduling portal at Cedar Health [1]. This portal was developed using Java, Spring Boot, React, and PostgreSQL. It included features such as appointments, eligibility checks, reminders, and staff dashboards. The candidate worked with clinic administrators to define acceptance criteria and validate workflows before the portal's release. The scheduling portal utilized role-based access and audit trails for appointment updates. Additionally, the candidate implemented REST endpoints for booking changes and cancellation requests, documented operational procedures, coordinated acceptance testing with the support team, implemented accessible form validation, and created responsive appointment views. The candidate also reviewed pull requests and investigated production errors, measured response times, and used database indexes to improve appointment searches. Finally, the candidate maintained documentation for support staff and ran release-readiness reviews.",
+      "sources": [
+        {
+          "number": 1,
+          "documentId": "d414d63b-f046-4e37-86af-48eb491306ec",
+          "filename": "fictional-resume.txt",
+          "chunkIndex": 0,
+          "similarity": 0.01639344262295082,
+          "snippet": "Fictional resume: Jordan Vale\nExperience\nCedar Health | Software Engineer | 2024\u20132026\nBuilt a patient scheduling portal using Java, Spring Boot, React, and PostgreSQL. Added appointments, eligibility checks, reminders, and staff dashboards. Worked with clinic administrators to define acceptance criteria and validate workflows before release. The scheduling portal used role-based access and audit trails for appointment updates. Designed REST endpoints for booking changes and cancellation requests. Documented operational procedures and coordinated acceptance testing with the support team. Implemented accessible form validation and responsive appointment views. Reviewed pull requests and investigated production errors. Measured response times and used database indexes to improve appointment searches. Maintained documentation for support staff and ran release-readiness reviews."
+        }
+      ],
+      "seconds": 16.56
+    },
+    {
+      "question": "Which technologies did he use there?",
+      "answer": "At Cedar Health, the candidate used the following technologies: Java, Spring Boot, React, and PostgreSQL [1].",
+      "sources": [
+        {
+          "number": 1,
+          "documentId": "d414d63b-f046-4e37-86af-48eb491306ec",
+          "filename": "fictional-resume.txt",
+          "chunkIndex": 0,
+          "similarity": 0.01639344262295082,
+          "snippet": "Cedar Health | Software Engineer | 2024\u20132026\nBuilt a patient scheduling portal using Java, Spring Boot, React, and PostgreSQL. Added appointments, eligibility checks, reminders, and staff dashboards. Worked with clinic administrators to define acceptance criteria and validate workflows before release. The scheduling portal used role-based access and audit trails for appointment updates. Designed REST endpoints for booking changes and cancellation requests. Documented operational procedures and coordinated acceptance testing with the support team. Implemented accessible form validation and responsive appointment views. Reviewed pull requests and investigated production errors. Measured response times and used database indexes to improve appointment searches. Maintained documentation for support staff and ran release-readiness reviews."
+        }
+      ],
+      "seconds": 8.56
+    },
+    {
+      "question": "Which technologies did he use at Birch Payments?",
+      "answer": "At Birch Payments, the candidate used the following technologies: Go, Redis, and Kafka [1].",
+      "sources": [
+        {
+          "number": 1,
+          "documentId": "d414d63b-f046-4e37-86af-48eb491306ec",
+          "filename": "fictional-resume.txt",
+          "chunkIndex": 1,
+          "similarity": 0.01639344262295082,
+          "snippet": "Birch Payments | Software Engineer | 2021\u20132023\nBuilt a reconciliation service using Go, Redis, and Kafka. Developed batch import validation, merchant settlement reports, and retry handling. The service processed payment reconciliation events and routed failed records for review. Coordinated with finance operations on exception handling and reporting requirements. Added monitoring for delayed events and implemented consumer lag alerts. Wrote service tests and documented recovery procedures. Improved merchant reporting and reconciliation accuracy. Supported incident response and tracked operational improvements. Prepared integration documentation and reviewed changes with teammates."
+        }
+      ],
+      "seconds": 7.76
+    }
+  ]
+}

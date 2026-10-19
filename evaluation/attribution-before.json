@@ -1,0 +1,75 @@
+{
+  "checks": {
+    "initial_grounded": true,
+    "followup_required": true,
+    "followup_no_other_role_or_general_skills": true,
+    "followup_cited": true,
+    "topic_switch": true,
+    "switch_cited": true
+  },
+  "passed": true,
+  "limitations": "One fictional resume and three live answers. Phrase checks require manual review, including negative mentions; not general attribution accuracy.",
+  "results": [
+    {
+      "question": "What did the candidate build at Cedar Health?",
+      "answer": "The candidate built a patient scheduling portal at Cedar Health [1]. This portal was developed using Java, Spring Boot, React, and PostgreSQL. It included features such as appointments, eligibility checks, reminders, and staff dashboards. The candidate worked with clinic administrators to define acceptance criteria and validate workflows before the portal's release. The scheduling portal utilized role-based access and audit trails for appointment updates. REST endpoints were designed for booking changes and cancellation requests. The candidate documented operational procedures and coordinated acceptance testing with the support team. Accessible form validation and responsive appointment views were implemented. Pull requests were reviewed, and production errors were investigated. Response times were measured, and database indexes were used to improve appointment searches. Documentation for support staff was maintained, and release-readiness reviews were conducted.",
+      "sources": [
+        {
+          "number": 1,
+          "documentId": "74e3f553-b162-44b9-b7b6-ca21f3aecca1",
+          "filename": "fictional-resume.txt",
+          "chunkIndex": 0,
+          "similarity": 0.01639344262295082,
+          "snippet": "Fictional resume: Jordan Vale\nExperience\nCedar Health | Software Engineer | 2024\u20132026\nBuilt a patient scheduling portal using Java, Spring Boot, React, and PostgreSQL. Added appointments, eligibility checks, reminders, and staff dashboards. Worked with clinic administrators to define acceptance criteria and validate workflows before release. The scheduling portal used role-based access and audit trails for appointment updates. Designed REST endpoints for booking changes and cancellation requests. Documented operational procedures and coordinated acceptance testing with the support team. Implemented accessible form validation and responsive appointment views. Reviewed pull requests and investigated production errors. Measured response times and used database indexes to improve appointment searches. Maintained documentation for support staff and ran release-readiness reviews."
+        }
+      ],
+      "seconds": 46.04
+    },
+    {
+      "question": "Which technologies did he use there?",
+      "answer": "The candidate used the following technologies at Cedar Health [1]:\n- Java\n- Spring Boot\n- React\n- PostgreSQL",
+      "sources": [
+        {
+          "number": 1,
+          "documentId": "74e3f553-b162-44b9-b7b6-ca21f3aecca1",
+          "filename": "fictional-resume.txt",
+          "chunkIndex": 0,
+          "similarity": 0.01639344262295082,
+          "snippet": "Fictional resume: Jordan Vale\nExperience\nCedar Health | Software Engineer | 2024\u20132026\nBuilt a patient scheduling portal using Java, Spring Boot, React, and PostgreSQL. Added appointments, eligibility checks, reminders, and staff dashboards. Worked with clinic administrators to define acceptance criteria and validate workflows before release. The scheduling portal used role-based access and audit trails for appointment updates. Designed REST endpoints for booking changes and cancellation requests. Documented operational procedures and coordinated acceptance testing with the support team. Implemented accessible form validation and responsive appointment views. Reviewed pull requests and investigated production errors. Measured response times and used database indexes to improve appointment searches. Maintained documentation for support staff and ran release-readiness reviews."
+        },
+        {
+          "number": 2,
+          "documentId": "74e3f553-b162-44b9-b7b6-ca21f3aecca1",
+          "filename": "fictional-resume.txt",
+          "chunkIndex": 1,
+          "similarity": 0.016129032258064516,
+          "snippet": "Birch Payments | Software Engineer | 2021\u20132023\nBuilt a reconciliation service using Go, Redis, and Kafka. Developed batch import validation, merchant settlement reports, and retry handling. The service processed payment reconciliation events and routed failed records for review. Coordinated with finance operations on exception handling and reporting requirements. Added monitoring for delayed events and implemented consumer lag alerts. Wrote service tests and documented recovery procedures. Improved merchant reporting and reconciliation accuracy. Supported incident response and tracked operational improvements. Prepared integration documentation and reviewed changes with teammates.\n\nGeneral skills\nRust, Kubernetes, Terraform, MongoDB, and Python. Personal learning and general technical familiarity; no employer assignment is provided in this section.\nEducation\nBachelor of Computer Science. This entire resume describes a fictional person."
+        }
+      ],
+      "seconds": 18.65
+    },
+    {
+      "question": "Which technologies did he use at Birch Payments?",
+      "answer": "At Birch Payments, the candidate used Go, Redis, and Kafka to build a reconciliation service [2]. This service processed payment reconciliation events, handled batch import validation, merchant settlement reports, and retry mechanisms. Monitoring for delayed events and consumer lag alerts were implemented. Service tests were written, and recovery procedures were documented. Merchant reporting and reconciliation accuracy were improved. Incident response support and operational improvements were tracked. Integration documentation was prepared, and changes were reviewed with teammates.",
+      "sources": [
+        {
+          "number": 1,
+          "documentId": "74e3f553-b162-44b9-b7b6-ca21f3aecca1",
+          "filename": "fictional-resume.txt",
+          "chunkIndex": 0,
+          "similarity": 0.01639344262295082,
+          "snippet": "Fictional resume: Jordan Vale\nExperience\nCedar Health | Software Engineer | 2024\u20132026\nBuilt a patient scheduling portal using Java, Spring Boot, React, and PostgreSQL. Added appointments, eligibility checks, reminders, and staff dashboards. Worked with clinic administrators to define acceptance criteria and validate workflows before release. The scheduling portal used role-based access and audit trails for appointment updates. Designed REST endpoints for booking changes and cancellation requests. Documented operational procedures and coordinated acceptance testing with the support team. Implemented accessible form validation and responsive appointment views. Reviewed pull requests and investigated production errors. Measured response times and used database indexes to improve appointment searches. Maintained documentation for support staff and ran release-readiness reviews."
+        },
+        {
+          "number": 2,
+          "documentId": "74e3f553-b162-44b9-b7b6-ca21f3aecca1",
+          "filename": "fictional-resume.txt",
+          "chunkIndex": 1,
+          "similarity": 0.016129032258064516,
+          "snippet": "Birch Payments | Software Engineer | 2021\u20132023\nBuilt a reconciliation service using Go, Redis, and Kafka. Developed batch import validation, merchant settlement reports, and retry handling. The service processed payment reconciliation events and routed failed records for review. Coordinated with finance operations on exception handling and reporting requirements. Added monitoring for delayed events and implemented consumer lag alerts. Wrote service tests and documented recovery procedures. Improved merchant reporting and reconciliation accuracy. Supported incident response and tracked operational improvements. Prepared integration documentation and reviewed changes with teammates.\n\nGeneral skills\nRust, Kubernetes, Terraform, MongoDB, and Python. Personal learning and general technical familiarity; no employer assignment is provided in this section.\nEducation\nBachelor of Computer Science. This entire resume describes a fictional person."
+        }
+      ],
+      "seconds": 11.99
+    }
+  ]
+}

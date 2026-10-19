@@ -12,6 +12,31 @@ import java.util.function.Consumer;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
 class RagServiceTest {
+    @Test void followUpExcludesGenericSkillPassagesOutsideTheOriginalTopic() {
+        UUID doc=UUID.randomUUID();
+        var role=new SearchHit(UUID.randomUUID(),doc,0,"At Cedar Health: Java and PostgreSQL.",0,.02);
+        var skills=new SearchHit(UUID.randomUUID(),doc,3,"General skills: Rust and Kubernetes.",0,.02);
+        when(props.maxContextChars()).thenReturn(2000);
+        when(docs.findAllById(any())).thenReturn(List.of());
+        when(search.retrieve(any(),eq(user))).thenAnswer(inv -> {
+            com.ekp.search.SearchRequest r=inv.getArgument(0);
+            return r.query().equals("What did the candidate build at Cedar Health?") ? List.of(role) : List.of(role,skills);
+        });
+        var history=List.of(new RagRequest.PreviousTurn("What did the candidate build at Cedar Health?", "Used Kubernetes and Rust [1]"));
+        AnswerSink sink=mock(AnswerSink.class);
+        service.answer(new RagRequest("Which technologies did he use there?",doc,null,null,history),user,sink);
+        verify(sink).onSources(argThat(s -> s.size()==1 && s.get(0).snippet().contains("Cedar Health")));
+        verify(model).stream(argThat(messages -> !messages.get(1).content().contains("Kubernetes")
+                && messages.get(0).content().contains("general skills do not prove")),any());
+    }
+
+    @Test void namedTopicSwitchDoesNotReuseThePreviousEmployersRetrieval() {
+        when(props.maxContextChars()).thenReturn(1000);
+        when(search.retrieve(any(),eq(user))).thenReturn(List.of());
+        var history=List.of(new RagRequest.PreviousTurn("What did he build at Cedar Health?", "A portal."));
+        service.answer(new RagRequest("What did he use at Birch Payments?",null,null,null,history),user,mock(AnswerSink.class));
+        verify(search,times(1)).retrieve(argThat(r -> r.query().equals("What did he use at Birch Payments?")),eq(user));
+    }
     @Test void asksForAReferenceWhenFirstQuestionHasNoMatchingEvidence() {
         when(props.maxContextChars()).thenReturn(1000);
         when(search.retrieve(any(),eq(user))).thenReturn(List.of());

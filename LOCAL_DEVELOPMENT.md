@@ -71,3 +71,11 @@ Use the Collection selector to create a project collection or focus the library 
 ## Follow-up verification
 
 Run `python evaluation/followup_eval.py` against the local running app. This uses fictional documents and a new synthetic account, checks a saved conversation round trip, resolves an Atlas follow-up, rejects an incorrect date in history, and checks missing-information behavior. History is capped at three turns (500 characters per question, 1,000 per answer). Retrieval uses previous question terms plus the new question; there is no separate question-rewriting model call. Long conversations, unrelated topic switches and references that appear only in earlier answers can still require a more explicit question.
+
+## Attribution precision
+
+Referential follow-ups (for example, Which technologies did he use there?) now intersect their retrieved chunks with those retrieved for the latest explicit question in the supplied history. If that intersection is empty, only the earlier topic passages are used. Both searches retain the current owner, document and collection filters. Clearly named topic switches such as at Birch Payments use the new question alone. Generation instructions prohibit attributing general skills or another role to a named employer and require citations next to claims.
+
+This is a conservative English heuristic, not an entity resolver or an attribution guarantee. Broad matches in the original question can still contain mixed sections. Relevant details outside the topic passages may be omitted; ask an explicit question to broaden the search. Section-aware indexing and stronger semantic retrieval remain future work.
+
+Employer technology questions also use conservative excerpt filtering when an employer can be recognized after at/for in the current question or referential question history. Only chunks containing that employer remain; excerpts begin at its name and stop at recognized skills/education/summary headings or a following dated pipe-formatted role heading. Earlier generated answers are omitted for technology questions so an old incorrect skill list cannot seed the next answer. Other layouts, lowercase employer names, or technology synonyms may not trigger this heuristic. It can omit valid continuation paragraphs, and it does not guarantee completeness or correctness.
