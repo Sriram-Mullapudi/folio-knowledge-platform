@@ -6,7 +6,7 @@ services:
       POSTGRES_DB: ekp
       POSTGRES_USER: ekp
       POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD}
-    ports: ["127.0.0.1:55432:5432"]
+    ports: ["127.0.0.1:${LOCAL_DB_PORT:-25432}:5432"]
     volumes: ["dev-postgres:/var/lib/postgresql/data"]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ekp -d ekp"]

@@ -175,3 +175,17 @@ Final verification: five upload/authorization/reprocessing integration tests pas
   evaluation/semantic-results.json. This small fixture set does not establish
   general retrieval or answer accuracy. Existing passages were indexed locally;
   original documents were not rewritten.
+
+## 2026-10-19 — Restore login after Windows reserved the database port
+
+Login reported backend unreachable while Docker/backend were offline. Restarting
+Docker exposed the concrete startup failure: Windows excluded TCP 55428–55527,
+which includes the former PostgreSQL host port 55432. Verified 25432 could bind,
+changed Compose and the backend launcher to share LOCAL_DB_PORT (default 25432),
+and preserved the existing named database volume. Documented the override.
+
+Validation: database container healthy on loopback 25432; backend packaged and
+started successfully; health and synthetic-account login passed through the
+frontend proxy at port 5174. No application logic or UI changed. Started the
+frontend/backend as hidden background processes. No credentials or runtime logs
+included in this change.

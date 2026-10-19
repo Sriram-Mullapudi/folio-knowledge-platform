@@ -15,7 +15,13 @@ From this directory, run in two PowerShell terminals:
 .\scripts\Run-Frontend.ps1
 ```
 
-Open http://127.0.0.1:5174 and register a local account. The backend is http://127.0.0.1:8081. PostgreSQL uses port 55432, Redis 56379, and MinIO 59000/59001. The backend script creates random local credentials in the ignored `.env.local` file when absent. Do not share that file.
+Open http://127.0.0.1:5174 and register a local account. The backend is http://127.0.0.1:8081. PostgreSQL uses port 25432, Redis 56379, and MinIO 59000/59001. The backend script creates random local credentials in the ignored `.env.local` file when absent. Do not share that file.
+
+If Windows reserves a database port, set `LOCAL_DB_PORT` to an available port in
+`.env.local` and restart `scripts/Run-Backend.ps1`. Compose and the backend use the
+same setting. The previous default, 55432, fell inside a Windows excluded port
+range after a restart; 25432 avoids that range. Changing the host port preserves
+the existing named database volume.
 
 The scripts deliberately disable embeddings and generation for a free local baseline. Keyword search, uploads, processing, document inventory, and workspace statistics work in this mode. AI research, summaries, and answers require a configured generation provider. The source supports hybrid retrieval when embeddings are enabled, but live-provider verification is a separate step.
 

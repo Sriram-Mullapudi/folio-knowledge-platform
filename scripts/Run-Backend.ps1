@@ -18,7 +18,7 @@ $composeArgs = @('--env-file', $envFile, '-f', (Join-Path $projectRoot 'infra/co
 if (($env:GENERATION_ENABLED -eq 'true' -and $env:GENERATION_BASE_URL -eq 'http://127.0.0.1:11434/v1') -or ($env:EMBEDDINGS_ENABLED -eq 'true' -and $env:EMBEDDING_BASE_URL -eq 'http://127.0.0.1:11434/v1')) { $composeArgs += @('--profile','local-ai') }
 docker compose @composeArgs up -d --wait
 if ($LASTEXITCODE -ne 0) { throw 'Local services failed to start' }
-$env:DB_PORT='55432'
+$env:DB_PORT=if ($env:LOCAL_DB_PORT) { $env:LOCAL_DB_PORT } else { '25432' }
 $env:DB_USER='ekp'
 $env:DB_NAME='ekp'
 $env:REDIS_PORT='56379'
