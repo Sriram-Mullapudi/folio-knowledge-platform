@@ -39,3 +39,4 @@ Thumbs.db
 *.pfx
 __pycache__/
 *.pyc
+.runtime/

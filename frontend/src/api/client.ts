@@ -109,7 +109,7 @@ async function request<T>(
     const returnedId = res.headers.get("X-Correlation-Id") ?? correlationId;
 
     if (!res.ok) {
-      let message = `Request failed with status ${res.status}`;
+      let message = res.status >= 500 ? 'Folio is temporarily unavailable. Open Start Folio and try again once your workspace is ready.' : `Request failed with status ${res.status}`;
       try {
         const errBody = await res.json();
         if (errBody && typeof errBody.message === "string") message = errBody.message;
@@ -124,9 +124,9 @@ async function request<T>(
   } catch (err) {
     if (err instanceof ApiError) throw err;
     if (err instanceof DOMException && err.name === "AbortError") {
-      throw new ApiError(0, `Request timed out after ${timeoutMs} ms`, correlationId);
+      throw new ApiError(0, 'Folio is taking longer than expected. Please try again in a moment.', correlationId);
     }
-    throw new ApiError(0, "Network error: backend unreachable", correlationId);
+    throw new ApiError(0, 'We can’t reach your workspace. Open Start Folio, wait until it is ready, then try again.', correlationId);
   } finally {
     clearTimeout(timer);
   }

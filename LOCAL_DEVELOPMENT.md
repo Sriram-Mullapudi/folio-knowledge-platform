@@ -119,3 +119,25 @@ existing 5 GB memory limit; limited hardware may still reload models and be slow
 Run `evaluation/semantic_eval.py` against the local app for three fictional
 paraphrase rankings, one cited answer, and cross-account isolation. This is a small retrieval
 check, not a comprehensive answer correctness benchmark.
+# One-click launch (Windows)
+
+Double-click **Start Folio.cmd** in the project folder. It starts Docker if
+needed, waits for Folio's backend and page connection to be healthy, and only
+then opens the workspace. Running it again reuses healthy services. It does not
+reset Docker, delete uploads, or install software. Java 17, Node.js, and Docker
+Desktop must already be installed. Use Node.js 24 LTS for the current build and
+test tools (also used in CI). Keep Docker running while using Folio.
+
+If Windows blocks the configured database port, the launcher probes ports
+25432–25451 and updates only `LOCAL_DB_PORT` in `.env.local`. It preserves the
+named data volume. It does not stop unknown processes occupying app ports.
+Startup failures point to logs under `.runtime/` (ignored by Git). To check
+startup without opening a browser, run `scripts/Start-Folio.ps1 -NoBrowser`.
+The launcher uses Windows PowerShell and the machine's RemoteSigned execution
+policy for this invocation; organization-enforced policies remain in effect.
+
+If the app cannot restore a session during an outage, it retains the saved
+refresh token and shows a reconnect screen. An explicitly rejected token still
+signs the user out. The login page can check service availability independently
+of credentials. Clicking Check again never submits a password or retries a
+state-changing request.

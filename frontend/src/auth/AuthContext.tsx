@@ -14,9 +14,10 @@ import {
   setAccessToken,
   setRefreshHandler,
   setStoredRefreshToken,
+  ApiError,
 } from "../api/client";
 
-type Status = "loading" | "authed" | "anon";
+type Status = "loading" | "authed" | "anon" | "offline";
 
 interface AuthContextValue {
   user: AuthUser | null;
@@ -58,9 +59,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const res = await authApi.refresh(stored);
         applySession(res);
         return res.accessToken;
-      } catch {
-        clearSession();
-        return null;
+      } catch (error) {
+        // Only an explicit rejected refresh invalidates the saved session.
+        // Outages propagate to callers without discarding the refresh token.
+        if (error instanceof ApiError && (error.status === 400 || error.status === 401 || error.status === 403)) {
+          clearSession();
+          return null;
+        }
+        throw error;
       } finally {
         refreshing.current = null;
       }
@@ -84,8 +90,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (active) setStatus("anon");
         return;
       }
-      const token = await doRefresh();
-      if (active && !token) setStatus("anon");
+      try {
+        const token = await doRefresh();
+        if (active && !token) setStatus("anon");
+      } catch {
+        if (active) setStatus("offline");
+      }
     })();
     return () => {
       active = false;

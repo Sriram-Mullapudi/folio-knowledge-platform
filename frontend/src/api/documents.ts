@@ -106,15 +106,15 @@ export function uploadDocument(
           reject(new ApiError(xhr.status, "Malformed server response"));
         }
       } else if (xhr.status === 401 && !retried) {
-        const newToken = await forceRefresh();
-        if (newToken) {
-          try {
+        try {
+          const newToken = await forceRefresh();
+          if (newToken) {
             resolve(await uploadDocument(file, onProgress, true));
-          } catch (err) {
-            reject(err);
+          } else {
+            reject(new ApiError(401, "Session expired — please sign in again"));
           }
-        } else {
-          reject(new ApiError(401, "Session expired — please sign in again"));
+        } catch (err) {
+          reject(err);
         }
       } else {
         reject(new ApiError(xhr.status, parseXhrMessage(xhr)));

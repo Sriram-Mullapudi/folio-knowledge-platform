@@ -189,3 +189,24 @@ started successfully; health and synthetic-account login passed through the
 frontend proxy at port 5174. No application logic or UI changed. Started the
 frontend/backend as hidden background processes. No credentials or runtime logs
 included in this change.
+## 2026-10-19 — Product reliability release
+
+- Added Start Folio.cmd and a bounded Windows launcher: reuse healthy services,
+  start Docker as needed, detect occupied database ports, preserve the database
+  volume, start app processes in the background, and wait for health through the
+  page proxy before opening the browser. Logs stay in ignored .runtime/.
+- Added login connection status and reconnect controls. Temporary outages no
+  longer discard saved refresh tokens or unmount an authenticated workspace;
+  explicit invalid-token responses still clear the session. Fixed the upload
+  promise so refresh failures reject it rather than leaving it pending.
+- Added six simulated-DOM recovery tests and frontend CI execution. Upgraded
+  Vite/Vitest/Tailwind/TypeScript ESLint after dependency advisories were found;
+  Node 24 CI with deterministic npm ci. npm audit reports zero known frontend
+  advisories at verification time. Runtime Java/backend logic unchanged.
+- Verified reuse of healthy services, stopped-app launch, port probes, and an
+  actual occupied-database-port recovery. Existing synthetic-account login
+  passed through port 5174 after recovery; no user files were modified/reset.
+- Live local hybrid answer suite passed 8/8 automated cases, with complete
+  evidence in evaluation/release-answer-results.json. Small fictional corpus;
+  not a universal accuracy score. Visual browser QA remains blocked by the
+  browser URL policy, including the Tailwind migration. See RELEASE_READINESS.md.
